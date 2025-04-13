@@ -200,7 +200,7 @@ bool load_entity_types(const std::filesystem::path& folder_path,GameData& map_da
         auto map_index = get_map(map_data,map_id);
         if(map_index==SIZE_MAX){
             std::cout<<"Failed to load entity types, can't match map: "<<map_id<<"\n";
-            return false; 
+            return false;
         }
         auto& entity_type = map_data[map_index].entity_info;
         entity_type.resize(10000,{EntityType::UNKNOWN,0u});
@@ -309,7 +309,7 @@ bool load_generator_files(const std::filesystem::path& folder_path,GameData& map
         auto map_index = get_map(map_data,map_id);
         if(map_index==SIZE_MAX){
             std::cout<<"Failed to load generators, can't match map: "<<map_id<<"\n";
-            return false; 
+            return false;
         }
         // std::cout<<"Reading: "<<map_names[map_id]<<" generator file\n";
         std::stringstream ss;
@@ -333,7 +333,7 @@ bool load_regist_files(const std::filesystem::path& folder_path,GameData& map_da
         auto map_index = get_map(map_data,map_id);
         if(map_index==SIZE_MAX){
             std::cout<<"Failed to load regists, can't match map: "<<map_id<<"\n";
-            return false; 
+            return false;
         }
         // std::cout<<"Reading: "<<map_names[map_id]<<" generator file\n";
         std::stringstream ss;
@@ -357,7 +357,7 @@ bool load_location_files(const std::filesystem::path& folder_path,GameData& map_
         auto map_index = get_map(map_data,map_id);
         if(map_index==SIZE_MAX){
             std::cout<<"Failed to load locations, can't match map: "<<map_id<<"\n";
-            return false; 
+            return false;
         }
         // std::cout<<"Reading: "<<map_names[map_id]<<" generator file\n";
         std::stringstream ss;
@@ -425,7 +425,7 @@ void test_npc_itemlots(const GameData& map_data){
     //In order for npc swap to work its necessary to change thier item lot
     //Otherwise they wont drop anything given that is controlled by their character
     //id, not their generator
-    //This function checked is used to prove my theory that no NPC 
+    //This function checked is used to prove my theory that no NPC
     //uses a item lot for drops in their generators
     for(const auto& map:map_data){
         for(size_t i =0;i<map.generator.data.size();i++){
@@ -475,7 +475,7 @@ void test_location_generator_parity(const GameData& map_data){
     for(const auto& map:map_data){
         std::cout<<map.name<<" "<<map.location.data.size()<<" "<<map.generator.data.size()<<'\n';
         std::cout<<map.name<<" "<<map.location.row_info.size()<<" "<<map.generator.row_info.size()<<'\n';
-    }  
+    }
 }
 
 bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
@@ -507,7 +507,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         enemy_table.enemies.push_back(std::move(enemy_type));
     }
     enemy_prop_file.close();
-    
+
     std::ifstream enemy_file(enemies_filepath);
     if(!enemy_file){
         std::cout<<"Failed to load enemy table , can't open file:"<<enemies_filepath<<"\n";
@@ -592,10 +592,10 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
                 for(const auto v:variation.instances){
                     std::cout<<v.regist.enemy_id<<" "<<v.regist.logic_id<<" "<<v.regist.default_logic_id<<" "<<v.regist.spawn_state<<" "<<(int)v.regist.display_group<<" "<<(int)v.regist.draw_group<<" "<<v.ai_think<<'\n';
                 }
-                
+
                 if(variation.id==333000)variation.instances.pop_back();//Bad Velstatd instance
                 if(variation.id==324000)variation.instances.pop_back();//Bad Belfry Gargoyle instance
-    
+
             }
             if(enemy_id==6191){//Executioner chariot
                 for(auto& instance:variation.instances){
@@ -621,7 +621,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
                     instance.regist.logic_id=611020;
                     instance.regist.spawn_state=0;
                 }
-            }else if(enemy_id==6900){//Ivory King 
+            }else if(enemy_id==6900){//Ivory King
                 //Prevent him from walking out of bounds
                 for(auto& instance:variation.instances){
                     instance.regist.spawn_state=1;
@@ -701,8 +701,8 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         u64 map_id=0;
         parse::read_var(tokens[0],map_id);
         parse::read_var(tokens[1],repo.enemy_row);
-        parse::read_var(p[0],repo.position[0]);           
-        parse::read_var(p[1],repo.position[1]);           
+        parse::read_var(p[0],repo.position[0]);
+        parse::read_var(p[1],repo.position[1]);
         parse::read_var(p[2],repo.position[2]);
         enemy_table.reposition.insert(std::make_pair(map_id,repo));
     }
@@ -718,7 +718,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
             {10040000,76400002},//Lenigrast Majula
             {10040000,76600000},//Carillion Majula
             {10040000,76300000},//Rosabeth Majula
-            {10040000,74100000},//Blue covenant guy Majula      
+            {10040000,74100000},//Blue covenant guy Majula
             {10040000,76200000},//Chloanne
             {10020000,72300000},//Milibeth
             {10320000,72500000},//Darkdiver Grandahl
@@ -830,7 +830,7 @@ bool should_enemy_be_randomize(EntityType entity_type,const Config config){
     else if(entity_type==EntityType::MIMIC  ) valid=config.randomize_mimics;
     else if(entity_type==EntityType::LIZARD ) valid=config.randomize_lizards;
     else if(entity_type==EntityType::HOLLOW ) valid=!config.remove_invis;
-    return valid; 
+    return valid;
 }
 
 s32 create_new_enemy(EnemyTable& enemy_table,s32 og_enemy_id){
@@ -1005,7 +1005,7 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
             //Theres a chance that even if n bosses are used the rolls can spawn less
             size_t different_used_bosses = 0;
             for(auto& entry:enemy_slots){
-                bool good_luck = random::roll(config.roaming_boss_chance,100,boss_chance_generator);
+                bool good_luck = random::roll(config.roaming_boss_chance,boss_chance_generator);
                 if(!entry.replace||!good_luck)continue;
                 size_t random_index = random::vindex(boss_index,boss_chance_generator);
                 if(new_bosses_ids[random_index]==0){
@@ -1029,7 +1029,8 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
         //Select the enemy types for this zone
         //Need to salt the seed for each different map to keep each map independent
         //Dont know if this is an ok way to it
-        random_generator.seed(config.seed+hash_str_uint32(map.name));
+        //random_generator.seed(config.seed+hash_str_uint32(map.name));
+        random_generator.seed(combine_seed_with_zone(config.seed, map.name));
         std::vector<size_t> enemies_id = random::choose_n_elements(allowed_enemies_index,different_enemies,false,random_generator);
         if(!enemies_id.empty()){
             bool single_deck = config.enemy_shuffling==0;
@@ -1074,8 +1075,8 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
                 if(!slot.boss) slot.index=enemy_index;
             }
         }
-        
-        //Select enemy instances 
+
+        //Select enemy instances
         for(auto& slot:enemy_slots){
             if(!slot.replace)continue;
             if(slot.boss){
@@ -1093,7 +1094,7 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
         if(config.enemy_scaling&&map.enemy_scaling<2000){//Only scale certain zones
             enemy_id_mapping.clear();
             float hp_target = (float)map.enemy_scaling;
-            float dmg_target = map.dmg_scaling; 
+            float dmg_target = map.dmg_scaling;
             for(auto& slot : enemy_slots){
                 if(!slot.replace)continue;
                 if(slot.boss){
@@ -1107,7 +1108,7 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
                     auto iter = enemy_id_mapping.find(enemy_id);
                     if(iter==enemy_id_mapping.end()){//Create new enemy and balance
                         auto new_enemy_id = create_new_enemy(enemy_table,enemy_id);
-                        if(new_enemy_id==0) return false; 
+                        if(new_enemy_id==0) return false;
                         enemy_id_mapping[enemy_id]=new_enemy_id;
                         slot.enemy.regist.enemy_id=new_enemy_id;
                         balance_enemy(enemy_table,slot.enemy.regist.enemy_id,hp_target,hp_scaling,dmg_target,dmg_scaling);
@@ -1122,7 +1123,7 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
             auto& slot = enemy_slots[j];
             if(!slot.replace)continue;
             auto& gen_data = generator.data[j];
-            
+
             if(slot.boss){ //Makes the bosses work outside their arena
                 gen_data.activation_event_id[0]=105501;
             }
@@ -1139,12 +1140,12 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
                     }
                 }
             }
-            
+
 
             //Change the enemy generator to use the new register and ai
             gen_data.ai_think_id=slot.enemy.ai_think;
             gen_data.generator_regist_param=(u32)regist_start_row;
-            
+
             //Change the draw group so it actually shows up
             auto& entity_info = map.entity_info[generator.row_info[j].row];
             slot.enemy.regist.draw_group=entity_info.draw_group;
@@ -1468,12 +1469,12 @@ void randomize_bosses(GameData& map_data,EnemyTable& enemy_table,const Config& c
             // std::cout<<"HP "<<ptr->hp<<"->"<<hhh->hp<<" "<<arena.hp_target<<'\n';
             // std::cout<<"DMG "<<ptr->dmg_mult<<"->"<<hhh->dmg_mult<<" "<<dmg_scaling<<'\n';
             // std::cout<<og_dmg<<" "<< arena.dmg_target<<"\n";
-            
+
             if(boss_new_id==0) continue;
             random_enemy.regist.enemy_id=boss_new_id;
         }
-        
-        
+
+
 
         if(arena.name=="Vendrick"){
             //Make fume knight and aldia not be underground so the fight can be triggered
@@ -1482,8 +1483,8 @@ void randomize_bosses(GameData& map_data,EnemyTable& enemy_table,const Config& c
             }
         }
 
-        
-        
+
+
         generator->ai_think_id=random_enemy.ai_think;
         generator->generator_regist_param=(u32)regist_start_row;
 
@@ -1495,7 +1496,7 @@ void randomize_bosses(GameData& map_data,EnemyTable& enemy_table,const Config& c
         //Getting the same enemy entry multiple times on the same enemy operation kinda bad, simplifies code tho
         auto spawn_ptr = get_entry_ptr(enemy_table.enemy_params,random_enemy.regist.enemy_id);
         if(spawn_ptr){
-            spawn_ptr->spawn_limit=1; 
+            spawn_ptr->spawn_limit=1;
             //Gives whoever is in Mytha's arena poison immunity so they dont die if player doesnt burn
             //the mill, as the boss may die before going into the arena messing up the progression
             if(arena.name=="Mytha the Baneful Queen"){
@@ -1609,7 +1610,7 @@ bool load_map_data(GameData& map_data){
     const std::filesystem::path location_folder   {paths::params/"generator_location"};
     const std::filesystem::path regist_folder     {paths::params/"generator_regist"};
     const std::filesystem::path entity_type_folder{"map_enemy_types"};
-    
+
     if(!load_generator_files(generator_folder,map_data)) return false;
     if(!load_regist_files(regist_folder,map_data)) return false;
     if(!load_location_files(location_folder,map_data)) return false;
@@ -1633,8 +1634,8 @@ bool write_final_params(GameData& data,EnemyTable& enemy_table,bool devmode){
         auto regist_out_path = paths::out_folder/(register_prefix+map.code+extension);
         write_to_file_binary(regist_out_path,write_param_file(map.regist));
         auto location_out_path = paths::out_folder/(location_prefix+map.code+extension);
-        write_to_file_binary(location_out_path,write_param_file(map.location)); 
-    }   
+        write_to_file_binary(location_out_path,write_param_file(map.location));
+    }
     write_to_file_binary(paths::out_folder/"EnemyParam.param",write_param_file(enemy_table.enemy_params));
 
     if(devmode){
@@ -1646,7 +1647,7 @@ bool write_final_params(GameData& data,EnemyTable& enemy_table,bool devmode){
             write_to_file_binary(regist_out_path,write_param_file(map.regist));
             auto location_out_path = out_folder_test/(location_prefix+map.code+extension);
             write_to_file_binary(location_out_path,write_param_file(map.location));
-        }   
+        }
         write_to_file_binary(std::filesystem::path{"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dark Souls II Scholar of the First Sin\\Game\\mods\\mod_testing\\Param\\EnemyParam.param"},write_param_file(enemy_table.enemy_params));
     }
     return true;
@@ -1731,13 +1732,13 @@ void write_configfile(Config& config){
 }
 
 bool read_configfile(Config& config){
-    config.randomize_enemies=true; 
+    config.randomize_enemies=true;
     config.randomize_mimics=true;
     config.randomize_lizards=true;
     config.remove_invis=false;
     config.enemy_shuffling=1;
     config.randomize_bosses=true;
-    
+
 
     config.boss_balance.belfry_rush=true;
     config.boss_balance.easy_congregation=true;
@@ -1806,7 +1807,7 @@ bool read_configfile(Config& config){
                 if(parse::read_var(entry,entry_value)){
                     config.banned_enemies.push_back(entry_value);
                 }
-                    
+
             }
             continue;
         }
@@ -1815,7 +1816,7 @@ bool read_configfile(Config& config){
             std::cerr<<"Error reading config file line: "<<line<<'\n';
             continue;
         }
-        
+
              if(command=="#INV_REPLACE")config.replace_invaders=value1;
         else if(command=="#INV_REMOVE" )config.remove_invaders=value1;
         else if(command=="#SUM_REPLACE")config.replace_summons=value1;
@@ -1872,7 +1873,7 @@ bool read_configfile(Config& config){
         }
     }
 
- 
+
     return true;
 }
 
@@ -1983,7 +1984,7 @@ bool restore_default_params(bool devmode){
     if(!success){
         std::cout << "Could not restore defaults.\n";
     }
-    return success; 
+    return success;
 }
 
 

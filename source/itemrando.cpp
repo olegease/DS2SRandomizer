@@ -57,7 +57,7 @@ namespace solver{
             inner.node = block.from;
             for(size_t j = 0;j<max_keys;j++){
                 inner.keys[j]=block.keys[j];
-            }   
+            }
             node.paths.push_back(inner);
         }
         state.placements.resize(graph.keys.size());
@@ -125,7 +125,7 @@ namespace solver{
             if(valid_nodes[i]) compressed_valid.push_back(i);
         }
         return compressed_valid;
-        
+
     }
 
     //This is a simple solver, and its not part of the randomizer
@@ -263,6 +263,7 @@ namespace solver{
         bool keys=false,rooms=false,doors=false;
         graph.keys.push_back({"NULL",1});
         while(std::getline(file,line)){
+            if (line.empty()) continue;
             std::string_view sview = line;
             if(sview.front()=='#'){
                 keys = rooms = doors=false;
@@ -348,7 +349,7 @@ namespace solver{
         graph.n_nodes = graph.rooms.size();
         return true;
     }
-    
+
     bool solver_test1(){
         solver::Graph graph;
         graph.n_nodes=2;
@@ -443,7 +444,7 @@ float vitality_to_equipment_load(unsigned int vitality){
     else if(vitality>=70&&vitality<=98) return 116.f+(vitality-70)*0.25f;
     else if(vitality>=50&&vitality<=69) return 96.f +(vitality-50)*0.5f;
     else if(vitality>=30&&vitality<=49) return 76.f +(vitality-30)*1.f;
-    return 38.5f+vitality*1.5f; 
+    return 38.5f+vitality*1.5f;
 }
 WeaponType weapon_type_from_id(s32 weapon_id){
     auto inrange=[](s32 value,s32 low,s32 high){return value>=low&&value<=high;};
@@ -488,7 +489,7 @@ struct WeaponSpecs{
 struct ArmorSpecs{
     s32 id{0};
     s32 strength{0},dexterity{0},intelligence{0},faith{0};
-    float weight{0.f}; 
+    float weight{0.f};
 };
 struct SpellSpecs{
     s32 id{0};
@@ -564,8 +565,8 @@ struct ItemRandoData{
     std::vector<s32> enemy_lots;
     std::unordered_map<s32,std::string> enemy_names;
     std::unordered_map<s32,std::string> lot_name;
-    
-    std::unordered_map<std::string,std::vector<s32>> location_lots; 
+
+    std::unordered_map<std::string,std::vector<s32>> location_lots;
     std::vector<std::pair<s32,s32>> equivalents;
     GameItems items;
     Shops shops;
@@ -584,6 +585,7 @@ bool load_equivalents(ItemRandoData& data){
     data.equivalents.reserve(100);
     std::string line;
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         auto tokens = parse::split(line,',');
         if(tokens.size()!=2){
             std::cout<<"Bad line in: "<<path<<" "<<line<<'\n';
@@ -612,6 +614,7 @@ bool load_location_lots(ItemRandoData& data){
     std::string last_location = "";
 
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
         if(view.front()=='#'){
@@ -623,7 +626,7 @@ bool load_location_lots(ItemRandoData& data){
                 s32 value=0;
                 if(parse::read_var(t,value)){
                     if(vector_contains(data.unmissable_lots,value)){
-                        data.location_lots[last_location].push_back(value); 
+                        data.location_lots[last_location].push_back(value);
                     }
                 }
             }
@@ -631,6 +634,7 @@ bool load_location_lots(ItemRandoData& data){
     }
     if(!open_file(file,event_path)) return false;
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
         auto tokens = parse::split(view,',');
@@ -641,7 +645,7 @@ bool load_location_lots(ItemRandoData& data){
         s32 value=0;
         if(parse::read_var(tokens.front(),value)){
             if(vector_contains(data.unmissable_lots,value)){
-                data.location_lots[std::string(tokens[1])].push_back(value); 
+                data.location_lots[std::string(tokens[1])].push_back(value);
             }
         }
     }
@@ -730,7 +734,7 @@ bool load_lots(ItemRandoData& data){
             }else{
                 std::cout<<"No category set: "<<line<<'\n';
             }
-            
+
         }
     }
     vector_remove_duplicates(data.missable_lots);
@@ -746,6 +750,7 @@ bool load_key_lots(ItemRandoData& data){
     std::string line;
     s32 key_id = 0;
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         auto tokens = parse::split(line,',');
         if(tokens[0].front()=='#'){
             if(tokens.size()!=2){
@@ -802,7 +807,7 @@ bool load_items(GameItems& items){
     if(!open_file(file,path))return false;
     items.names.reserve(2048);
     while(std::getline(file,line)){
-        if(line.substr(0,2)=="//")continue;//Comment
+        if(line.empty() || line.substr(0,2)=="//")continue;//Comment
         if(line.front()=='#'){
             if(line=="#KEYS") item_ptr=&items.keys;
             else if(line=="#ITEMS") item_ptr=&items.consumables;
@@ -1022,7 +1027,7 @@ bool load_shop_items(Shops& shop){
     bool straid=false,ornifex=false,common=false,remove=false;
     if(!open_file(file,path))return false;
     while(std::getline(file,line)){
-        if(line.substr(0,2)=="//")continue;//Comment
+        if(line.empty() || line.substr(0,2)=="//")continue;//Comment
         if(line.front()=='#'){
             straid=ornifex=common=remove=false;
             if(line=="#COMMON") common=true;
@@ -1172,7 +1177,7 @@ bool load_randomizer_data(IRData& irdata){
     if(!load_shop_items(data.shops)) return false;
     if(!load_gear_data(data.items))  return false;
     if(!load_classes(data.classes))  return false;
-    
+
     irdata.config.valid=true;
     auto t = clock.passed();
     std::cout<<"Successful item rando load in: "<<t/1000<<"ms\n";
@@ -1314,11 +1319,11 @@ bool place_graph_key_items(ItemRandoData& lots,ItemRandoConfig& config){
         }else if(key=="Kill Iron King"){
             state.placements[i].node.push_back(solver::room_by_name(graph,"Iron Keep"));
         }else if(key=="Kill The Rotten"){
-            state.placements[i].node.push_back(solver::room_by_name(graph,"The Gutter"));    
+            state.placements[i].node.push_back(solver::room_by_name(graph,"The Gutter"));
         }else if(key=="Kill Freja"){
-            state.placements[i].node.push_back(solver::room_by_name(graph,"Tseldora"));    
+            state.placements[i].node.push_back(solver::room_by_name(graph,"Tseldora"));
         }else if(key=="Kill Giant Lord"){
-            state.placements[i].node.push_back(solver::room_by_name(graph,"Giant Lord Memory"));    
+            state.placements[i].node.push_back(solver::room_by_name(graph,"Giant Lord Memory"));
         }else if(key=="Kill Vendrick"){
             state.placements[i].node.push_back(solver::room_by_name(graph,"Undead Crypt"));
         }else{
@@ -1432,7 +1437,7 @@ bool place_rest_keys(ItemRandoData& lots,ItemRandoConfig& config){
     return true;
 }
 void place_shop_items(ItemRandoData& lots,ItemRandoConfig& config){
-    auto& shops = lots.shops; 
+    auto& shops = lots.shops;
     std::mt19937_64 generator(config.seed);
     // std::cout<<"Straid: "<<shops.straid_trades.size()<<" Ornifex:"<<shops.ornifex_trades.size()<<" Common: "<<shops.common.size()<<'\n';
     // std::cout<<"Weapons:"<<lots.items.weapons.size()<<'\n';
@@ -1454,7 +1459,7 @@ void place_shop_items(ItemRandoData& lots,ItemRandoConfig& config){
         a.infinite=true;
         a.price_mult=random::real(0.5f,1.5f,generator);
         wars.pop_back();
-    }    
+    }
     for(auto& a:shops.ornifex_trades){
         if(wars.empty()) break;
         auto element = wars.back();
@@ -1478,10 +1483,10 @@ void place_shop_items(ItemRandoData& lots,ItemRandoConfig& config){
     std::shuffle(shop_index.begin(),shop_index.end(),generator);
 
     if(config.infinite_shop_slots){
-        std::vector<s32> infinite_items={    
+        std::vector<s32> infinite_items={
         60970000,60975000,60980000,60990000,61000000,61030000,60151000,60350000,60240000,60250000,60260000,60270000,60280000,60290000,60570000,60910000,60920000,60430000,60760000,60770000,60780000,60790000,60800000,60810000,60820000,60830000,60930000,60940000,60950000,60960000,60870000,60880000,60900000,60010000};
         for(const auto& item:infinite_items){
-            if(shop_index.empty())break;        
+            if(shop_index.empty())break;
             auto& slot = shops.common[shop_index.back()];
             shop_index.pop_back();
             slot.infinite=true;
@@ -1494,13 +1499,13 @@ void place_shop_items(ItemRandoData& lots,ItemRandoConfig& config){
     float split = 0.6f;
     size_t wars_split = static_cast<size_t>(split*shop_index.size());
     for(size_t i = 0;i<wars_split;i++){
-        if(shop_index.empty()||wars.empty())break;        
+        if(shop_index.empty()||wars.empty())break;
         auto& slot = shops.common[shop_index.back()];
         shop_index.pop_back();
         auto element = wars.back();
         wars.pop_back();
         slot.item_id=element->id;
-        element->quantity-=1;  
+        element->quantity-=1;
         slot.infinite=false;
         slot.quantity=1;
         slot.price_mult = random::real(0.5f,1.5f,generator);
@@ -1705,7 +1710,7 @@ void place_enemy_drops(ItemRandoData& data,ItemRandoConfig& config){
     //Place consumables
     for(const auto& id:enemies){
         if(random::integer(0,99,generator)<40) continue;
-        auto element = random::element(data.items.consumables,generator);        
+        auto element = random::element(data.items.consumables,generator);
         LotData lot;
         lot.amount=1;
         lot.infinite=true;
@@ -1767,7 +1772,7 @@ void randomize_weapon_infusion(ItemRandoData& data,ItemRandoConfig& config){
     };
     for(auto& lot:data.lots) change_weapon(lot);
     for(auto& lot:data.chr_lots) change_weapon(lot);
-    
+
 }
 void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
     auto& classes = data.classes;
@@ -1794,7 +1799,7 @@ void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
             bool dex = specs.dex>=piece.dexterity;
             bool fth = specs.fth>=piece.faith;
             bool intll = specs.intll>=piece.intelligence;
-            bool valid_piece = gear_type&piece.gear_type; 
+            bool valid_piece = gear_type&piece.gear_type;
             if(valid_piece&&str&&dex&&intll&&fth&&w) valid_index.push_back(i);
         }
         if(!valid_index.empty()){
@@ -1828,7 +1833,7 @@ void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
                     valid_gear(GearPiece::Legs,specs,mclass.gear.legs);
                 }else if(e==Equipment::RHand){
                     if(config.allow_twohanding) specs.str*=2;
-                    
+
                     if(config.allow_shield_weapon&&config.allow_bows){
                         valid_gear(GearPiece::RightShieldBow,specs,mclass.gear.right_hand);
                     }else if(config.allow_shield_weapon){
@@ -2104,14 +2109,14 @@ void write_item_params(ItemRandoData& rando_data,ItemRandoConfig& config,bool de
     }
     write_to_file_binary(paths::out_folder/shop_param,write_param_file(shop_data));
     write_to_file_binary(paths::out_folder/chr_param,write_param_file(chr));
-    write_to_file_binary(paths::out_folder/other_param,write_param_file(other));   
-    write_to_file_binary(paths::out_folder/classes_param,write_param_file(classes)); 
+    write_to_file_binary(paths::out_folder/other_param,write_param_file(other));
+    write_to_file_binary(paths::out_folder/classes_param,write_param_file(classes));
     if(devmode){
         std::filesystem::path dev_path{"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dark Souls II Scholar of the First Sin\\Game\\mods\\mod_testing\\Param"};
         write_to_file_binary(dev_path/shop_param,write_param_file(shop_data));
         write_to_file_binary(dev_path/chr_param,write_param_file(chr));
-        write_to_file_binary(dev_path/other_param,write_param_file(other));   
-        write_to_file_binary(dev_path/classes_param,write_param_file(classes)); 
+        write_to_file_binary(dev_path/other_param,write_param_file(other));
+        write_to_file_binary(dev_path/classes_param,write_param_file(classes));
     }
 }
 void write_cheatsheet(ItemRandoData& data,ItemRandoConfig& config){
@@ -2170,7 +2175,7 @@ void write_cheatsheet(ItemRandoData& data,ItemRandoConfig& config){
         if(enemy_used.find(key)==enemy_used.end()){
             ss<<data.items.names[lot.item_id]<<" dropped by "<<data.enemy_names[(s32)id]<<"\n\n";
             enemy_used[key]=1;
-        }   
+        }
     }
 
     if(!std::filesystem::exists(paths::cheatsheet_folder)){
@@ -2270,7 +2275,7 @@ bool restore_default_params(){
         std::cout << "Could not restore defaults: " << e.what() << '\n';
         return false;
     }
-    return true; 
+    return true;
 }
 
 //Tests and file generators
@@ -2307,9 +2312,10 @@ void lots_test(){
             }
         }
     }
-    std::vector<std::vector<uint32_t>> equivalent; 
+    std::vector<std::vector<uint32_t>> equivalent;
     std::ifstream file("./build/EquivalentLots.txt");
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         std::string_view view = line;
         auto tokens = parse::split(view,',');
         equivalent.push_back({});
@@ -2347,7 +2353,7 @@ void lots_test(){
                         std::cout<<ll<<",";
                     }
                     std::cout<<'\n';
-                }   
+                }
             }
         }
     }
@@ -2388,6 +2394,7 @@ bool unmissable_location_test(){
     }
     std::string current_location;
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
         if(view.front()=='#'){
@@ -2401,7 +2408,7 @@ bool unmissable_location_test(){
                 loaded.push_back({value,current_location});
             }
         }
-        
+
     }
     file.close();
     file.open("./build/EventLots.txt");
@@ -2410,6 +2417,7 @@ bool unmissable_location_test(){
         return false;
     }
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
         auto tokens = parse::split(view,',');
@@ -2493,7 +2501,7 @@ void find_item_lots_enemies(){
     std::filesystem::path folder_path = "build/Params/generator";
     std::filesystem::path names_path = "build/Params/generator_names";
     std::filesystem::path lots_path = "build/Params/ItemLotParam2_Chr.param";
-    
+
     std::vector<ParamFile<Generator>> v;
     for(const auto& entry:std::filesystem::directory_iterator(folder_path)){
         auto path = entry.path();
@@ -2518,6 +2526,7 @@ void find_item_lots_enemies(){
         names.push_back({});
         std::string line;
         while(std::getline(file,line)){
+            if(line.empty()) continue;
             std::string_view view=line;
             u64 id =0;
             parse::read_var(view.substr(0,view.find(" [")),id);
@@ -2555,7 +2564,7 @@ void find_item_lots_enemies(){
         }
     }
 
-    
+
 
 }
 void get_weapon_data(){
@@ -2565,6 +2574,7 @@ void get_weapon_data(){
     std::string line;
     std::unordered_map<s32,std::string> weapon_infusions;
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         auto tokens = parse::split(line,',');
         auto id = 0;
         parse::read_var(tokens[0],id);
@@ -2646,6 +2656,7 @@ void get_itemlots_description(){
     std::string line;
     std::unordered_map<s32,std::string> lots_descriptions;
     while(std::getline(file,line)){
+        if (line.empty()) continue;
         auto tokens = parse::split(line,';');
         if(tokens.size()!=2){
             std::cout<<"Bad line: "<<line<<'\n';
