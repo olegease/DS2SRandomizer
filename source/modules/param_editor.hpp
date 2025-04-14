@@ -265,7 +265,7 @@ struct EnemyParam{
     s32 item_lot_overkill;
     f32 unk4;
     s32 ngp_hp[7];
-    u8  unk5[12];  
+    u8  unk5[12];
 };
 
 struct RoundOutDmg{
@@ -279,7 +279,7 @@ struct RoundInDmg{
 };
 struct ChrRoundDamageParam{
     RoundOutDmg out[8];
-    RoundInDmg  in [8]; 
+    RoundInDmg  in [8];
 };
 
 struct ParamHeader{

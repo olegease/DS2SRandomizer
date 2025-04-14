@@ -14,7 +14,7 @@ namespace item_rando{
         bool randomize_classes{true};
         bool randomize_gifts{true};
         bool allow_twohanding{true};
-        bool allow_unusable{false}; 
+        bool allow_unusable{false};
         bool allow_shield_weapon{false};
         bool allow_catalysts{true};
         bool allow_bows{true};
