@@ -1811,6 +1811,16 @@ void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
     //@WARNING There is a possibility that you don't get any weapon if the prior equipment is too heavy
     if(config.full_rando_classes){
         for(auto& mclass:classes){
+            auto stats = random::stats(9, 8, generator);
+            mclass.vigor = stats[0];
+            mclass.end = stats[1];
+            mclass.vit = stats[2];
+            mclass.att = stats[3];
+            mclass.str = stats[4];
+            mclass.dex = stats[5];
+            mclass.adp = stats[6];
+            mclass.intll = stats[7];
+            mclass.fth = stats[8];
             std::shuffle(equipment.begin(),equipment.end(),generator);
             auto specs = mclass;
             if(config.allow_unusable){
@@ -2048,6 +2058,16 @@ void write_item_params(ItemRandoData& rando_data,ItemRandoConfig& config,bool de
             auto& data = classes.data[i];
             for(const auto& mclass:rando_data.classes){
                 if(mclass.id==row){
+                    data.soul_level  = mclass.vigor+mclass.end+mclass.vit+mclass.att+mclass.str+mclass.dex+mclass.adp+mclass.intll+mclass.fth-53;
+                    data.vigor       = mclass.vigor;
+                    data.endurance   = mclass.end;
+                    data.vitality    = mclass.vit;
+                    data.attunement  = mclass.att;
+                    data.strength    = mclass.str;
+                    data.dexterity   = mclass.dex;
+                    data.adaptability= mclass.adp;
+                    data.intelligence= mclass.intll;
+                    data.faith       = mclass.fth;
                     data.head_armor  = mclass.gear.head;
                     data.chest_armor = mclass.gear.chest;
                     data.hands_armor = mclass.gear.arms;

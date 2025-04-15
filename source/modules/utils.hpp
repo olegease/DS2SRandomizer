@@ -1,10 +1,12 @@
 #ifndef CBOYO_DS2SRANDOMIZER_UTILS_HPP
 #define CBOYO_DS2SRANDOMIZER_UTILS_HPP
 
+#include <array>
 #include <cassert>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <numeric>
 #include <random>
 #include <unordered_map>
 
@@ -27,8 +29,10 @@ inline bool open_file( std::ifstream &file, const std::filesystem::path &path ) 
 }
 
 inline auto combine_seed_with_zone(uint64_t seed, std::string_view zone) -> uint64_t {
+    constexpr uint64_t golden_ratio = 0x9e3779b97f4a7c15;
     std::hash<std::string_view> hasher;
-    return hasher(zone) ^ (seed * 0x9e3779b97f4a7c15);
+    seed ^= hasher(zone) + golden_ratio + (seed << 6) + (seed >> 2);
+    return seed;
 }
 
 inline auto vector_find_swap_pop(auto &&container, auto &&value) -> decltype(auto) {
@@ -74,18 +78,18 @@ inline auto time_string_now() -> std::string {
 
 namespace parse {
     inline auto split(std::string_view view, char delimiter) -> std::vector<std::string_view> {
-        std::vector<std::string_view> rvo;
+        std::vector<std::string_view> tokens;
 
         size_t beg = 0;
         size_t end = view.find(delimiter);
         for ( ; end != std::string_view::npos; end = view.find(delimiter, beg)) {
-            rvo.emplace_back(view.substr(beg, end - beg));
+            tokens.emplace_back(view.substr(beg, end - beg));
             beg = end + 1;
         }
         auto last = view.substr(beg);
-        if (!last.empty()) rvo.emplace_back(last);
+        if (!last.empty()) tokens.emplace_back(last);
 
-        return rvo;
+        return tokens;
     }
 
     inline bool read_var(std::string_view view, auto &out) {
@@ -113,7 +117,7 @@ namespace random {
         return indices;
     }
 
-    auto vindex(auto &&container, auto &&generator) -> decltype(auto) {
+    auto vindex(auto &&container, auto &&generator) -> size_t {
         std::uniform_int_distribution<size_t> dist(0, container.size() - 1);
         return dist(generator);
     }
@@ -122,6 +126,37 @@ namespace random {
         assert(min <= 100);
         std::uniform_int_distribution<unsigned> dist(1, 100);
         return dist(generator) <= min;
+    }
+
+    auto stats(unsigned init, unsigned diff, auto &&generator) -> std::array< uint8_t, 9 > {
+        assert(6 < init && init < 51 && init > diff);
+        std::array< uint8_t, 9 > stats;
+        stats.fill(init);
+        if (diff == 0) return stats;
+        auto gen_sign = [&generator]() -> int {
+            std::uniform_int_distribution<unsigned> dist_sign(0, 1);
+            return dist_sign(generator) ? 1 : -1;
+        };
+        auto gen_diff = [&generator, &diff]() -> uint8_t {
+            std::uniform_int_distribution<unsigned> dist_diff(0, diff);
+            return dist_diff(generator);
+        };
+        int curr = 0;
+        int sum = 0;
+        int sign = gen_sign();
+        for (auto &stat : stats) {
+            auto gend = gen_diff() * sign;
+            stat += gend;
+            curr += gend;
+            sum += stat;
+            if (curr > 0) sign = -1;
+            else if (curr < 0) sign = 1;
+            else sign = gen_sign();
+        }
+        int init_sum = init * stats.size();
+        assert(sum - diff <= init_sum && init_sum <= sum + diff);
+        std::shuffle(stats.begin(), stats.end(), generator);
+        return stats;
     }
 
     template<typename T, typename Gen>
