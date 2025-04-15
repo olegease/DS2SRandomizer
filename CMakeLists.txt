@@ -17,3 +17,7 @@ option( ${PROJECT_NAME}_BUILD_INTO_RUNTIME "Build into runtime output directory"
 add_subdirectory( source )
 add_library( cboyo::${PROJECT_NAME} ALIAS ${PROJECT_NAME} )
 target_include_directories( ${PROJECT_NAME} PUBLIC include )
+
+if ( EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/temp/CMakeLists.txt" )
+    add_subdirectory( temp )
+endif( )
