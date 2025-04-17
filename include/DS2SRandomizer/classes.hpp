@@ -39,7 +39,7 @@ namespace ds2srand::classes {
         };
     };
 
-    auto scatter( ) -> Alter::array_view {
+    inline auto scatter( ) -> Alter::array_view {
         Alter::array_view names{ };
         MenuText menutext{ };
         for ( auto &orig_class : Original::array ) {
@@ -54,7 +54,7 @@ namespace ds2srand::classes {
         return names;
     }
 
-    void restore( ) {
+    inline void restore( ) {
         MenuText menutext{ };
         menutext.restore( );
     }

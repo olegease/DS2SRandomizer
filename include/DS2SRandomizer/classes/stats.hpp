@@ -78,20 +78,17 @@ namespace ds2srand::classes {
             mage_{ init, init, init }
         { }
         Stats( Tank tank, Dual dual, Mage mage ) : tank_{ tank }, dual_{ dual }, mage_{ mage } { }
-        Stats( uint8_t init, uint8_t diff, std::uniform_random_bit_generator auto &generator ) {
+        Stats( uint8_t init, uint8_t diff, std::uniform_random_bit_generator auto &generator ) : Stats{ init } {
             assert( 6 < init && init < 51 && init > diff );
 
             std::uniform_int_distribution< unsigned > spec{ 0, 99 };
             if ( spec( generator ) <= 8 ) {
                 specific_ = true;
-                Stats{ init };
                 return;
             }
 
-            if (diff == 0) {
-                Stats{ init };
-                return;
-            };
+            if (diff == 0) return;
+
             std::array< uint8_t, 9 > stats;
             stats.fill( init );
             auto gen_sign = [&generator]( ) -> int8_t {
