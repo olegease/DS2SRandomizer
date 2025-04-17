@@ -1140,7 +1140,7 @@ void read_config_file(ItemRandoConfig& config){
             continue;
         }
              if(command=="#VERSION")           version=value1;
-        else if(command=="#SEED")              config.seed=value1;
+        else if(command=="#SEED" && value1)    config.seed=value1;
         else if(command=="#WEIGHT_LIMIT")      config.weight_limit=value1;
         else if(command=="#UNLOCK_SHOP")       config.unlock_common_shop=value1;
         else if(command=="#UNLOCK_STRAID")     config.unlock_straid_trades=value1;

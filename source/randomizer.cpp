@@ -1855,7 +1855,7 @@ bool read_configfile(Config& config){
         else if(command=="#MB_THR")   config.multiboss.throne_watchers=value1;
         else if(command=="#MB_GRA")   config.multiboss.graverobbers=value1;
         else if(command=="#MB_LUD")   config.multiboss.lud_and_zallen=value1;
-        else if(command=="#SEED")     config.seed=value1;
+        else if(command=="#SEED" && value1)     config.seed=value1;
         for(const auto& entry:common::map_names){
             auto map_id=std::get<0>(entry);
             if(command=="#M"+std::to_string(map_id)){
