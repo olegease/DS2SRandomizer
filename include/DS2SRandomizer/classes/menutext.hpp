@@ -27,8 +27,8 @@ namespace ds2srand::classes {
         inline static OverrideBytes const deprived { 0x1240, "Deprived" };
 
         inline static std::array< OverrideBytes, 8 > const array {
-            warrior, knight, bandit, cleric,
-            sorcerer, explorer, swordsman, deprived
+            warrior, knight, swordsman, bandit,
+            cleric, sorcerer, explorer, deprived
         };
 
         void override_bytes( OverrideBytes const &bytesclass, std::string_view name ) {
@@ -37,6 +37,11 @@ namespace ds2srand::classes {
                 char c = i < name.size() ? name[i] : '\0';
                 file.put( c );
             }
+        }
+
+        void override_bytes( uint8_t index, std::string_view name ) {
+            if ( index >= array.size( ) ) throw std::out_of_range( "Index out of range" );
+            override_bytes( array[ index ], name);
         }
 
         std::string read_bytes( OverrideBytes const &bytesclass ) {

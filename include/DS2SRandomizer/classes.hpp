@@ -1,6 +1,7 @@
 #ifndef DS2SRANDOMIZER_CLASS_HPP
 #define DS2SRANDOMIZER_CLASS_HPP
 
+#include "classes/alter.hpp"
 #include "classes/menutext.hpp"
 #include "classes/stats.hpp"
 
@@ -13,7 +14,8 @@ namespace ds2srand::classes {
         struct Names {
             Stats const &stats;
             std::string_view name;
-            Names( Stats const &s, std::string_view n ) : stats{ s }, name{ n } { }
+            uint8_t index{ };
+            Names( Stats const &s, std::string_view n, uint8_t i ) : stats{ s }, name{ n }, index{ i } { }
         };
     public:
         inline static Stats Warrior  { Stats::Tank{ 7u, 6u,15u }, Stats::Dual{ 6u,11u, 5u }, Stats::Mage{ 5u, 5u, 5u } };
@@ -26,14 +28,14 @@ namespace ds2srand::classes {
         inline static Stats Deprived { Stats::Tank{ 6u, 6u, 6u }, Stats::Dual{ 6u, 6u, 6u }, Stats::Mage{ 6u, 6u, 6u } };
 
         inline static std::array< Names, 8 > const array {
-            Names{ Warrior, MenuText::warrior.name },
-            Names{ Knight, MenuText::knight.name },
-            Names{ Swordsman, MenuText::swordsman.name },
-            Names{ Bandit, MenuText::bandit.name },
-            Names{ Cleric, MenuText::cleric.name },
-            Names{ Sorcerer, MenuText::sorcerer.name },
-            Names{ Explorer, MenuText::explorer.name },
-            Names{ Deprived, MenuText::deprived.name }
+            Names{ Warrior,   MenuText::warrior.name,   0 },
+            Names{ Knight,    MenuText::knight.name,    1 },
+            Names{ Swordsman, MenuText::swordsman.name, 2 },
+            Names{ Bandit,    MenuText::bandit.name,    3 },
+            Names{ Cleric,    MenuText::cleric.name,    4 },
+            Names{ Sorcerer,  MenuText::sorcerer.name,  5 },
+            Names{ Explorer,  MenuText::explorer.name,  6 },
+            Names{ Deprived,  MenuText::deprived.name,  7 }
         };
     };
 } // namespace ds2srand::classes

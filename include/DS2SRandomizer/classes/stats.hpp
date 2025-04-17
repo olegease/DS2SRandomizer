@@ -78,11 +78,11 @@ namespace ds2srand::classes {
             mage_{ init, init, init }
         { }
         Stats( Tank tank, Dual dual, Mage mage ) : tank_{ tank }, dual_{ dual }, mage_{ mage } { }
-        Stats( uint8_t init, uint8_t diff, std::uniform_random_bit_generator auto &generator) {
-            assert(6 < init && init < 51 && init > diff);
+        Stats( uint8_t init, uint8_t diff, std::uniform_random_bit_generator auto &generator ) {
+            assert( 6 < init && init < 51 && init > diff );
 
-            std::uniform_int_distribution< unsigned > spec{0, 99};
-            if ( spec( generator ) < 8) {
+            std::uniform_int_distribution< unsigned > spec{ 0, 99 };
+            if ( spec( generator ) <= 8 ) {
                 specific_ = true;
                 Stats{ init };
                 return;
@@ -93,32 +93,32 @@ namespace ds2srand::classes {
                 return;
             };
             std::array< uint8_t, 9 > stats;
-            stats.fill(init);
-            auto gen_sign = [&generator]() -> int8_t {
-                std::uniform_int_distribution<unsigned> dist_sign(0, 1);
-                return dist_sign(generator) ? 1 : -1;
+            stats.fill( init );
+            auto gen_sign = [&generator]( ) -> int8_t {
+                std::uniform_int_distribution< unsigned > dist_sign( 0, 1 );
+                return dist_sign( generator ) ? 1 : -1;
             };
-            auto gen_diff = [&generator, &diff]() -> uint8_t {
-                std::uniform_int_distribution<unsigned> dist_diff(0, diff);
+            auto gen_diff = [&generator, &diff]( ) -> uint8_t {
+                std::uniform_int_distribution< unsigned > dist_diff( 0, diff );
                 return static_cast< uint8_t >( dist_diff( generator ) );
             };
             int curr = 0;
             int sum = 0;
-            int8_t sign = gen_sign();
-            for (auto &stat : stats) {
-                int8_t gend = gen_diff() * sign;
+            int8_t sign = gen_sign( );
+            for ( auto &stat : stats ) {
+                int8_t gend = gen_diff( ) * sign;
                 stat += gend;
                 curr += gend;
                 sum += stat;
-                if (curr > 0) sign = -1;
-                else if (curr < 0) sign = 1;
-                else sign = gen_sign();
+                if ( curr > 0 ) sign = -1;
+                else if ( curr < 0 ) sign = 1;
+                else sign = gen_sign( );
             }
             #ifndef NDEBUG
-            auto init_sum = init * stats.size();
+            auto init_sum = init * stats.size( );
             #endif
-            assert(sum - diff <= init_sum && init_sum <= sum + diff);
-            std::shuffle(stats.begin(), stats.end(), generator);
+            assert( sum - diff <= init_sum && init_sum <= sum + diff );
+            std::shuffle( stats.begin( ), stats.end( ), generator );
 
             tank_ = Tank_{ stats[0], stats[2], stats[4] };
             dual_ = Dual_{ stats[1], stats[5], stats[6] };

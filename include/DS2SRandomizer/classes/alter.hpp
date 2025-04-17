@@ -7,7 +7,7 @@
 namespace ds2srand::classes {
     struct Alter {
         using array_view = std::array< std::string_view, 8 >;
-        inline static std::array< array_view, 8 > replacements{
+        inline static constexpr std::array< array_view, 8 > const replacements{
         // God - Good   | Neu - Neutral | Evi - Evil
         // Law - Lawful | Neu - Neutral | Cha - Chaotic
         // no depressed NeuNeu
