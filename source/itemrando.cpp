@@ -1,3 +1,4 @@
+#include <DS2SRandomizer/classes.hpp>
 #include "modules/item_rando.hpp"
 #include "modules/param_editor.hpp"
 #include "modules/utils.hpp"
@@ -1810,17 +1811,25 @@ void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
     };
     //@WARNING There is a possibility that you don't get any weapon if the prior equipment is too heavy
     if(config.full_rando_classes){
+        int classindex = 0;
+        ds2srand::classes::Alter::array_view classreplacements{ };
         for(auto& mclass:classes){
-            auto stats = random::stats(9, 8, generator);
-            mclass.vigor = stats[0];
-            mclass.end = stats[1];
-            mclass.vit = stats[2];
-            mclass.att = stats[3];
-            mclass.str = stats[4];
-            mclass.dex = stats[5];
-            mclass.adp = stats[6];
-            mclass.intll = stats[7];
-            mclass.fth = stats[8];
+            ds2srand::classes::Stats stats{ 9, 8, generator };
+            mclass.vigor = stats.vigor();
+            mclass.end = stats.endurance();
+            mclass.vit = stats.vitality();
+            mclass.att = stats.attunement();
+            mclass.str = stats.strength();
+            mclass.dex = stats.dexterity();
+            mclass.adp = stats.adaptability();
+            mclass.intll = stats.intelligence();
+            mclass.fth = stats.faith();
+
+            auto classgroup = stats.group();
+            auto classname = ds2srand::classes::Alter::replacements[(int)classgroup][classindex];
+            classreplacements[classindex] = classname;
+            classindex++;
+
             std::shuffle(equipment.begin(),equipment.end(),generator);
             auto specs = mclass;
             if(config.allow_unusable){
@@ -1874,9 +1883,15 @@ void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
                     if(random::real(0.f,1.f,generator)>0.5f) continue;//No ring for you
                     valid_gear(GearPiece::Ring,specs,mclass.gear.ring);
                 }
-            }
+            } // for eauipment
+        } // for classes
+        try {
+            ds2srand::classes::MenuText menutext{ };
+            for (auto i = 0u; i < classreplacements.size(); ++i) menutext.override_bytes(i, classreplacements[i]);
+        } catch (const std::exception& e) {
+            std::cerr << "Cannot open `menu/text/english/common.fmg` fle: " << e.what() << std::endl;
         }
-    }
+    } // config.full_rando_classes
 }
 void randomize_starting_gifts(ItemRandoData& data,ItemRandoConfig& config){
     using ItemPack = std::vector<Item>;
