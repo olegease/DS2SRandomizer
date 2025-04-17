@@ -6,12 +6,13 @@
 #include <chrono>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <numeric>
 #include <random>
 #include <unordered_map>
 
 class Stopwatch {
-    std::chrono::steady_clock::time_point start;
+    std::chrono::high_resolution_clock::time_point start;
 public:
     Stopwatch() : start(std::chrono::high_resolution_clock::now()) {}
     auto passed() const {
@@ -29,7 +30,7 @@ inline bool open_file( std::ifstream &file, const std::filesystem::path &path ) 
 }
 
 inline auto combine_seed_with_zone(uint64_t seed, std::string_view zone) -> uint64_t {
-    constexpr uint64_t golden_ratio = 0x9e3779b97f4a7c15;
+    constexpr uint64_t golden_ratio = 0x9E3779B97F4A7C15ull;
     std::hash<std::string_view> hasher;
     seed ^= hasher(zone) + golden_ratio + (seed << 6) + (seed >> 2);
     return seed;
