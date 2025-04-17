@@ -38,6 +38,26 @@ namespace ds2srand::classes {
             Names{ Deprived,  MenuText::deprived.name,  7 }
         };
     };
+
+    auto scatter( ) -> Alter::array_view {
+        Alter::array_view names{ };
+        MenuText menutext{ };
+        for ( auto &orig_class : Original::array ) {
+            std::random_device rd;
+            std::mt19937_64 gen{ rd( ) };
+            Stats randstats( 9u, 8u, gen );
+            auto group = randstats.group( );
+            std::string_view classname = Alter::replacements[(int)group][orig_class.index];
+            menutext.override_bytes( orig_class.index, classname );
+            names[orig_class.index] = classname;
+        }
+        return names;
+    }
+
+    void restore( ) {
+        MenuText menutext{ };
+        menutext.restore( );
+    }
 } // namespace ds2srand::classes
 
 #endif//DS2SRANDOMIZER_CLASS_HPP

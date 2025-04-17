@@ -1,3 +1,4 @@
+#include <DS2SRandomizer/classes.hpp>
 #include <modules/item_rando.hpp>
 #include <modules/randomizer.hpp>
 
@@ -7,7 +8,7 @@
 
 namespace app {
     using Commands = std::set< std::string_view >;
-    inline Commands const commands{ "enemy", "items" };
+    inline Commands const commands{ "class", "enemy", "items" };
 
     struct Args {
         std::string_view command{ };
@@ -28,6 +29,10 @@ namespace app {
     };
 }
 
+namespace app::classes {
+    using namespace ds2srand::classes;
+}
+
 namespace app::enemy {
     using namespace randomizer;
 }
@@ -43,6 +48,7 @@ int main( int argc, char *argv[] ) try {
     if ( args.options.contains( "-h" ) || args.options.contains( "--help" ) ) {
         std::cout << "Usage: ds2srand [command] [options]\n";
         std::cout << "Commands: (enemy and items by default\n";
+        std::cout << "\tclass:           Randomize character class names\n";
         std::cout << "\tenemy:           Enemies related options\n";
         std::cout << "\titems:           Items related options\n";
         std::cout << "Options:\n";
@@ -57,6 +63,11 @@ int main( int argc, char *argv[] ) try {
     };
 
     if ( args.options.contains( "-r" ) || args.options.contains( "--restore" ) ) {
+        if ( check_command( "class" ) ) {
+            std::cout << "Restoring default parameters for character classes" << std::endl;
+            app::classes::restore( );
+        }
+
         if ( check_command( "enemy" ) ) {
             std::cout << "Restoring default parameters for enemies" << std::endl;
             app::enemy::restore_default_params(false);
@@ -68,6 +79,13 @@ int main( int argc, char *argv[] ) try {
         }
 
         return EXIT_SUCCESS;
+    }
+
+    if ( check_command( "class" ) ) {
+        auto names = app::classes::scatter( );
+        std::cout << "Class names: ";
+        for ( auto const &name : names ) std::cout << name << " ";
+        std::cout << std::endl;
     }
 
     if ( check_command( "enemy" ) ) {
