@@ -6,8 +6,11 @@
 #include <cassert>
 #include <concepts>
 #include <cstdint>
+#include <fstream>
 #include <random>
+#include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace ds2srand::classes {
     //
@@ -41,6 +44,11 @@ namespace ds2srand::classes {
             { }
         } mage_;
         bool specific_{ false };
+        enum class Group_ : unsigned{
+            Specific = 0x000u, Balanced,
+            TankDual, TankMage, DualMage,
+            PureTank, PureDual, PureMage,
+        } group_;
         bool lequal_percent( unsigned lhs, unsigned rhs, unsigned percent = Leaqual_Percent_Default ) const {
             if (lhs == rhs) return true;
             unsigned diff = lhs > rhs ? lhs - rhs : rhs - lhs;
@@ -61,33 +69,42 @@ namespace ds2srand::classes {
         bool lequal_group_dualmage( ) const {
             return lequal_percent( dual_.sum_, mage_.sum_ ) && std::min( dual_.sum_, mage_.sum_ ) > tank_.sum_;
         }
+        Group_ group_impl( ) const {
+            if ( specific_ ) return Group_::Specific;
+            if ( lequal_group_balanced( ) ) return Group_::Balanced;
+            if ( lequal_group_tankdual( ) ) return Group_::TankDual;
+            if ( lequal_group_tankmage( ) ) return Group_::TankMage;
+            if ( lequal_group_dualmage( ) ) return Group_::DualMage;
+            if ( tank_.sum_ > dual_.sum_ && tank_.sum_ > mage_.sum_ ) return Group_::PureTank;
+            if ( dual_.sum_ > tank_.sum_ && dual_.sum_ > mage_.sum_ ) return Group_::PureDual;
+            if ( mage_.sum_ > tank_.sum_ && mage_.sum_ > dual_.sum_ ) return Group_::PureMage;
+            return Group_::Specific;
+        }
     public:
         // 20 is mandatory for current implementation to generate equal groups
         inline static unsigned lequal_percent_value = Leaqual_Percent_Default;
         using Tank = Tank_;
         using Dual = Dual_;
         using Mage = Mage_;
-        enum class Group {
-            Specific = 0x00000, Balanced,
-            TankDual, TankMage, DualMage,
-            PureTank, PureDual, PureMage,
-        };
+        using Group = Group_;
+
         Stats(uint8_t init) :
             tank_{ init, init, init },
             dual_{ init, init, init },
-            mage_{ init, init, init }
+            mage_{ init, init, init },
+            group_{ Group::Balanced }
         { }
-        Stats( Tank tank, Dual dual, Mage mage ) : tank_{ tank }, dual_{ dual }, mage_{ mage } { }
-        Stats( uint8_t init, uint8_t diff, std::uniform_random_bit_generator auto &generator ) : Stats{ init } {
-            assert( 6 < init && init < 51 && init > diff );
+        Stats( Tank tank, Dual dual, Mage mage ) :
+            tank_{ tank },
+            dual_{ dual },
+            mage_{ mage },
+            group_{ group_impl( ) }
+        { }
+        Stats( uint8_t init, uint8_t diff, std::uniform_random_bit_generator auto &generator ) {
+            assert( 6 < init && init < 51 && init > diff && diff != 0 );
 
             std::uniform_int_distribution< unsigned > spec{ 0, 99 };
-            if ( spec( generator ) <= 8 ) {
-                specific_ = true;
-                return;
-            }
-
-            if (diff == 0) return;
+            specific_ = spec( generator ) <= 8;
 
             std::array< uint8_t, 9 > stats;
             stats.fill( init );
@@ -120,8 +137,11 @@ namespace ds2srand::classes {
             tank_ = Tank_{ stats[0], stats[2], stats[4] };
             dual_ = Dual_{ stats[1], stats[5], stats[6] };
             mage_ = Mage_{ stats[3], stats[7], stats[8] };
+            group_ = group_impl( );
         }
 
+        auto sum( ) const { return static_cast< uint16_t >( tank_.sum_ + dual_.sum_ + mage_.sum_ ); }
+        auto soul_level( ) const { return static_cast< uint16_t >( sum( ) - 53u ); }
         auto groupsum_tank( ) const { return tank_.sum_; }
         auto groupsum_dual( ) const { return dual_.sum_; }
         auto groupsum_mage( ) const { return mage_.sum_; }
@@ -129,24 +149,14 @@ namespace ds2srand::classes {
         auto vigor( )        const { return tank_.vig_; }
         auto endurance( )    const { return dual_.end_; }
         auto vitality( )     const { return tank_.vit_; }
+        auto attunement( )   const { return mage_.att_; }
         auto strength( )     const { return tank_.str_; }
         auto dexterity( )    const { return dual_.dex_; }
         auto adaptability( ) const { return dual_.adp_; }
-        auto attunement( )   const { return mage_.att_; }
         auto intelligence( ) const { return mage_.int_; }
         auto faith( )        const { return mage_.fth_; }
 
-        Group group( ) const {
-            if ( specific_ ) return Group::Specific;
-            if ( lequal_group_balanced( ) ) return Group::Balanced;
-            if ( lequal_group_tankdual( ) ) return Group::TankDual;
-            if ( lequal_group_tankmage( ) ) return Group::TankMage;
-            if ( lequal_group_dualmage( ) ) return Group::DualMage;
-            if ( tank_.sum_ > dual_.sum_ && tank_.sum_ > mage_.sum_ ) return Group::PureTank;
-            if ( dual_.sum_ > tank_.sum_ && dual_.sum_ > mage_.sum_ ) return Group::PureDual;
-            if ( mage_.sum_ > tank_.sum_ && mage_.sum_ > dual_.sum_ ) return Group::PureMage;
-            return Group::Specific;
-        }
+        Group group( ) const { return group_; }
 
         std::string group_text( ) const {
             static std::array< std::string_view, 8 > texts = {
@@ -157,6 +167,111 @@ namespace ds2srand::classes {
             return std::string{ texts[static_cast< unsigned >( group( ) )] };
         }
     }; // class Stats
+
+    class Original {
+        struct Names {
+            Stats const &stats;
+            std::string_view name;
+            uint8_t index{ };
+            Names( Stats const &s, std::string_view n, uint8_t i ) : stats{ s }, name{ n }, index{ i } { }
+        };
+    public:
+        inline static Stats Warrior  { Stats::Tank{ 7u, 6u,15u }, Stats::Dual{ 6u,11u, 5u }, Stats::Mage{ 5u, 5u, 5u } };
+        inline static Stats Knight   { Stats::Tank{12u, 7u,11u }, Stats::Dual{ 6u, 8u, 9u }, Stats::Mage{ 4u, 3u, 6u } };
+        inline static Stats Swordsman{ Stats::Tank{ 4u, 4u, 9u }, Stats::Dual{ 8u,16u, 6u }, Stats::Mage{ 6u, 7u, 5u } };
+        inline static Stats Bandit   { Stats::Tank{ 9u,11u, 9u }, Stats::Dual{ 7u,14u, 3u }, Stats::Mage{ 2u, 1u, 8u } };
+        inline static Stats Cleric   { Stats::Tank{10u, 8u,11u }, Stats::Dual{ 3u, 5u, 4u }, Stats::Mage{10u, 4u,12u } };
+        inline static Stats Sorcerer { Stats::Tank{ 5u, 5u, 3u }, Stats::Dual{ 6u, 7u, 8u }, Stats::Mage{12u,14u, 4u } };
+        inline static Stats Explorer { Stats::Tank{ 7u, 9u, 6u }, Stats::Dual{ 6u, 6u,12u }, Stats::Mage{ 7u, 5u, 5u } };
+        inline static Stats Deprived { Stats::Tank{ 6u, 6u, 6u }, Stats::Dual{ 6u, 6u, 6u }, Stats::Mage{ 6u, 6u, 6u } };
+
+        inline static std::array< Names, 8 > const array {
+            Names{ Warrior,   MenuText::warrior.name,   0 },
+            Names{ Knight,    MenuText::knight.name,    1 },
+            Names{ Swordsman, MenuText::swordsman.name, 2 },
+            Names{ Bandit,    MenuText::bandit.name,    3 },
+            Names{ Cleric,    MenuText::cleric.name,    4 },
+            Names{ Sorcerer,  MenuText::sorcerer.name,  5 },
+            Names{ Explorer,  MenuText::explorer.name,  6 },
+            Names{ Deprived,  MenuText::deprived.name,  7 }
+        };
+    };
+
+    struct StatsData {
+        std::fstream file;
+        StatsData( ) : file{ "Param/PlayerStatusParam.param", std::ios::binary | std::ios::in | std::ios::out } {
+            if ( !file.is_open( ) ) throw std::runtime_error( "Error opening PlayerStatusParam.param file" );
+        }
+        inline static constexpr std::array< uint8_t, 9 > const offsets{ 0x02u, 0x08u, 0x0Au, 0x0Cu, 0x0Eu, 0x10u, 0x12u, 0x14u, 0x16u };
+        struct StatsAdapter
+        {
+            std::array< uint8_t, offsets.size( ) > array{ };
+            StatsAdapter( Stats const &stats) {
+                array[0] = stats.vigor( );
+                array[1] = stats.endurance( );
+                array[2] = stats.attunement( );
+                array[3] = stats.vitality( );
+                array[4] = stats.strength( );
+                array[5] = stats.dexterity( );
+                array[6] = stats.intelligence( );
+                array[7] = stats.faith( );
+                array[8] = stats.adaptability( );
+            }
+        };
+        struct OverrideBytes {
+            unsigned offset;
+            Stats const *stats;
+        };
+        //                                               LVL,  VIG,END,ATT,VIT,STR,DEX,INT,FTH,ADP
+        inline static OverrideBytes const warrior  { 0x031Cu, &Original::Warrior };
+        inline static OverrideBytes const knight   { 0x0444u, &Original::Knight };
+        inline static OverrideBytes const bandit   { 0x056Cu, &Original::Bandit };
+        inline static OverrideBytes const cleric   { 0x0694u, &Original::Cleric };
+        inline static OverrideBytes const sorcerer { 0x07BCu, &Original::Sorcerer };
+        inline static OverrideBytes const explorer { 0x08E4u, &Original::Explorer };
+        inline static OverrideBytes const swordsman{ 0x0A0Cu, &Original::Swordsman };
+        inline static OverrideBytes const deprived { 0x0B34u, &Original::Deprived };
+        inline static std::array< OverrideBytes, 8 > const array {
+            warrior, knight, swordsman, bandit, cleric, sorcerer, explorer, deprived
+        };
+
+        auto read( OverrideBytes const &bytesclass ) -> Stats {
+            file.seekg( bytesclass.offset );
+            std::vector< uint8_t > values{ };
+            values.reserve( offsets.size( ) );
+            for (auto offset : offsets) {
+                file.seekg( bytesclass.offset + offset );
+                auto b = static_cast< uint8_t >( file.get( ) );
+                values.push_back( b );
+            }
+            return Stats{
+                { Stats::Tank{ values[0], values[3], values[4] } },
+                { Stats::Dual{ values[1], values[5], values[8] } },
+                { Stats::Mage{ values[2], values[6], values[7] } }
+            };
+        }
+
+        void write( OverrideBytes const &bytesclass, Stats const &stats ) {
+            StatsAdapter adapter{ stats };
+            for (auto i = 0u; i < offsets.size( ); ++i ) {
+                file.seekp( bytesclass.offset + offsets[i] );
+                file.put( adapter.array[i] );
+            }
+            uint16_t sum = stats.soul_level( );
+            file.seekp( bytesclass.offset );
+            file.write( reinterpret_cast< char const * >( &sum ), sizeof( sum ) );
+        }
+
+        void write( std::uint8_t index, Stats const &stats ) {
+            if ( index >= array.size( ) ) throw std::out_of_range( "Index out of range" );
+            write( array[index], stats );
+        }
+
+        void restore( ) {
+            for ( auto &bytes : array ) write( bytes, *bytes.stats );
+        }
+    };
+
 } // namespace ds2srand::classes
 
 #endif//DS2SRANDOMIZER_CLASSES_STATS_HPP

@@ -2,6 +2,7 @@
 #include <modules/item_rando.hpp>
 #include <modules/randomizer.hpp>
 
+#include <cstdlib>
 #include <iostream>
 #include <set>
 #include <string>
@@ -48,14 +49,14 @@ int main( int argc, char *argv[] ) try {
     if ( args.options.contains( "-h" ) || args.options.contains( "--help" ) ) {
         std::cout << "Usage: ds2srand [command] [options]\n";
         std::cout << "Commands: (enemy and items by default\n";
-        std::cout << "\tclass:           Randomize character class names\n";
+        std::cout << "\tclass:           Scatter character class names and stats\n";
         std::cout << "\tenemy:           Enemies related options\n";
         std::cout << "\titems:           Items related options\n";
         std::cout << "Options:\n";
         std::cout << "\t-h, --help       Show this help message\n";
         std::cout << "\t-r, --restore    Restore default " << args.command << " parameters\n";
         std::cout << std::endl;
-        return 0;
+        return EXIT_SUCCESS;
     }
 
     auto check_command = [&args]( std::string_view command ) {
@@ -110,3 +111,5 @@ int main( int argc, char *argv[] ) try {
     std::cerr << "...: Unknown exception" << std::endl;
     return EXIT_FAILURE;
 } // main( ) try
+
+// Ⓒ 2025 Oleg'Ease'Kharchuk ᦒ
