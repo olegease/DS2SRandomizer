@@ -203,6 +203,7 @@ namespace ds2srand::classes {
             if ( !file.is_open( ) ) throw std::runtime_error( "Error opening PlayerStatusParam.param file" );
         }
         inline static constexpr std::array< uint8_t, 9 > const offsets{ 0x02u, 0x08u, 0x0Au, 0x0Cu, 0x0Eu, 0x10u, 0x12u, 0x14u, 0x16u };
+        // order of stats as they appear in the param file
         struct StatsAdapter
         {
             std::array< uint8_t, offsets.size( ) > array{ };
@@ -222,7 +223,7 @@ namespace ds2srand::classes {
             unsigned offset;
             Stats const *stats;
         };
-        //                                               LVL,  VIG,END,ATT,VIT,STR,DEX,INT,FTH,ADP
+
         inline static OverrideBytes const warrior  { 0x031Cu, &Original::Warrior };
         inline static OverrideBytes const knight   { 0x0444u, &Original::Knight };
         inline static OverrideBytes const bandit   { 0x056Cu, &Original::Bandit };
@@ -251,6 +252,8 @@ namespace ds2srand::classes {
             };
         }
 
+        auto read( std::uint8_t index ) -> Stats { return read( array.at( index ) ); }
+
         void write( OverrideBytes const &bytesclass, Stats const &stats ) {
             StatsAdapter adapter{ stats };
             for (auto i = 0u; i < offsets.size( ); ++i ) {
@@ -262,10 +265,7 @@ namespace ds2srand::classes {
             file.write( reinterpret_cast< char const * >( &sum ), sizeof( sum ) );
         }
 
-        void write( std::uint8_t index, Stats const &stats ) {
-            if ( index >= array.size( ) ) throw std::out_of_range( "Index out of range" );
-            write( array[index], stats );
-        }
+        void write( std::uint8_t index, Stats const &stats ) { write( array.at( index ), stats ); }
 
         void restore( ) {
             for ( auto &bytes : array ) write( bytes, *bytes.stats );

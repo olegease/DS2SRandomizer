@@ -1011,14 +1011,35 @@ bool load_ring_data(GameItems& items){
 
 bool load_classes(std::vector<ClassSpecs>& classes){
     classes.reserve(8);
-    classes.push_back({20,"Warrior",7,6,5,6,15,11,5,5,5});
-    classes.push_back({30,"Knight",12,6,4,7,11,8,3,6,9});
-    classes.push_back({50,"Bandit",9,7,2,11,9,14,1,8,3});
-    classes.push_back({70,"Cleric",10,3,10,8,11,5,4,12,4});
-    classes.push_back({80,"Sorcerer",5,6,12,5,3,7,14,4,8});
-    classes.push_back({90,"Explorer",7,6,7,9,6,6,5,5,12});
-    classes.push_back({100,"Swordsman",4,8,6,4,9,16,7,5,6});
-    classes.push_back({110,"Deprived",6,6,6,6,6,6,6,6,6});
+    try {
+        ds2srand::classes::StatsData statsdata{ };
+        std::array< uint8_t, 8 > index_adapter{ 0, 1, 3, 4, 5, 6, 2, 7 };
+        std::array< uint8_t, 8 > first{ 20, 30, 100, 50, 70, 80, 90, 110 };
+        std::array< char const *, 8 > second{ "Warrior", "Knight", "Swordsman", "Bandit", "Cleric", "Sorcerer", "Explorer", "Deprived" };
+
+        for ( auto idx : index_adapter ) {
+            ds2srand::classes::StatsData::StatsAdapter stats_adapter{ statsdata.read( idx ) };
+            classes.push_back({
+                first[idx], second[idx],
+                stats_adapter.array[0], stats_adapter.array[1], stats_adapter.array[2],
+                stats_adapter.array[3], stats_adapter.array[4], stats_adapter.array[5],
+                stats_adapter.array[6], stats_adapter.array[7], stats_adapter.array[8]
+            });
+        }
+    } catch ( std::exception const &e) {
+        std::cerr << "Error loading character classes stats from file 'PlayerStatusParam.param': " << e.what() << std::endl;
+        std::cout << "Using default character classes stats" << std::endl;
+        classes.clear();
+        classes.push_back({20,"Warrior",7,6,5,6,15,11,5,5,5});
+        classes.push_back({30,"Knight",12,6,4,7,11,8,3,6,9});
+        classes.push_back({50,"Bandit",9,7,2,11,9,14,1,8,3});
+        classes.push_back({70,"Cleric",10,3,10,8,11,5,4,12,4});
+        classes.push_back({80,"Sorcerer",5,6,12,5,3,7,14,4,8});
+        classes.push_back({90,"Explorer",7,6,7,9,6,6,5,5,12});
+        classes.push_back({100,"Swordsman",4,8,6,4,9,16,7,5,6});
+        classes.push_back({110,"Deprived",6,6,6,6,6,6,6,6,6});
+    }
+
     return true;
 }
 bool load_shop_items(Shops& shop){
@@ -1140,7 +1161,7 @@ void read_config_file(ItemRandoConfig& config){
             continue;
         }
              if(command=="#VERSION")           version=value1;
-        else if(command=="#SEED" && value1)    config.seed=value1;
+        else if(command=="#SEED")    config.seed= value1 ? value1 : config.seed;
         else if(command=="#WEIGHT_LIMIT")      config.weight_limit=value1;
         else if(command=="#UNLOCK_SHOP")       config.unlock_common_shop=value1;
         else if(command=="#UNLOCK_STRAID")     config.unlock_straid_trades=value1;
@@ -1811,25 +1832,7 @@ void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
     };
     //@WARNING There is a possibility that you don't get any weapon if the prior equipment is too heavy
     if(config.full_rando_classes){
-        int classindex = 0;
-        ds2srand::classes::Alter::array_view classreplacements{ };
         for(auto& mclass:classes){
-            ds2srand::classes::Stats stats{ 9, 8, generator };
-            mclass.vigor = stats.vigor();
-            mclass.end = stats.endurance();
-            mclass.vit = stats.vitality();
-            mclass.att = stats.attunement();
-            mclass.str = stats.strength();
-            mclass.dex = stats.dexterity();
-            mclass.adp = stats.adaptability();
-            mclass.intll = stats.intelligence();
-            mclass.fth = stats.faith();
-
-            auto classgroup = stats.group();
-            auto classname = ds2srand::classes::Alter::replacements[(int)classgroup][classindex];
-            classreplacements[classindex] = classname;
-            classindex++;
-
             std::shuffle(equipment.begin(),equipment.end(),generator);
             auto specs = mclass;
             if(config.allow_unusable){
@@ -1885,12 +1888,6 @@ void randomize_classes(ItemRandoData& data,ItemRandoConfig& config){
                 }
             } // for eauipment
         } // for classes
-        try {
-            ds2srand::classes::MenuText menutext{ };
-            for (auto i = 0u; i < classreplacements.size(); ++i) menutext.override_bytes(i, classreplacements[i]);
-        } catch (const std::exception& e) {
-            std::cerr << "Cannot open `menu/text/english/common.fmg` fle: " << e.what() << std::endl;
-        }
     } // config.full_rando_classes
 }
 void randomize_starting_gifts(ItemRandoData& data,ItemRandoConfig& config){
