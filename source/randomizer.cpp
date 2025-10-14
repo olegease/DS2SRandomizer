@@ -67,7 +67,7 @@ enum class EntityType:uint8_t{
 struct EntityInfo{
     EntityType type;
     uint8_t draw_group;
-    uint8_t display_group;
+    uint8_t display_group{ };
 };
 struct EnemyInstance{
     u32 ai_think;
@@ -872,9 +872,9 @@ float scale_dmg(float dmg,float target,float scale_factor){
 bool balance_enemy(EnemyTable& enemy_table,s32 enemy_id,float hp_target,float hp_scaling,float dmg_target,float dmg_scaling){
     EnemyParam* ptr = get_entry_ptr(enemy_table.enemy_params,enemy_id);
     if(!ptr) return false;//???
-    float og_hp   = ptr->hp;
-    float og_dmg  = ptr->dmg_mult;
-    s32 og_souls  = ptr->souls_held;
+    [[maybe_unused]] float og_hp   = ptr->hp;
+    [[maybe_unused]] float og_dmg  = ptr->dmg_mult;
+    [[maybe_unused]] s32 og_souls  = ptr->souls_held;
     // std::cout<<ptr<<" "<<og_hp<<" "<<og_dmg<<" "<<og_souls<<'\n';
 
     float npg_dmg = enemy_table.ngp_dmg_scaling[ptr->dmg_table]/100.f;
@@ -1415,7 +1415,7 @@ void randomize_bosses(GameData& map_data,EnemyTable& enemy_table,const Config& c
                 auto& mentity_info = map.entity_info[mrow];
                 map.generator.data[z].ai_think_id=rat_enemy.ai_think;
                 map.generator.data[z].generator_regist_param=(u32)regist_start_row;
-                if(mrow<9000+rats_to_spawn){
+                if(mrow<9000u+rats_to_spawn){
                     rat_enemy.regist.draw_group=mentity_info.draw_group;
                     rat_enemy.regist.display_group=mentity_info.display_group;
                 }else{//Remove this guys

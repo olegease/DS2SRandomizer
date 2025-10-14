@@ -294,8 +294,8 @@ struct ParamHeader{
 };
 struct ParamRowInfo{
     u64 row;
-    u64 initial_byte;
-    u64 end_of_file;
+    u64 initial_byte{ };
+    u64 end_of_file{ };
 };
 
 template<typename T>

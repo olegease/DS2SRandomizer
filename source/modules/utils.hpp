@@ -128,7 +128,7 @@ namespace cboyo::random {
         return container[dist(generator)];
     }
 
-    auto choose_n_elements(auto &&container, size_t n, bool b, auto &&generator) -> decltype(auto) {
+    auto choose_n_elements(auto &&container, size_t n, [[maybe_unused]] bool b, auto &&generator) -> decltype(auto) {
         typename std::remove_cvref<decltype(container)>::type indices;
         indices.reserve(n);
         std::uniform_int_distribution<size_t> dist(0, container.size() - 1);

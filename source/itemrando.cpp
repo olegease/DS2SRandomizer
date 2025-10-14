@@ -519,7 +519,7 @@ struct ClassSpecs{
     std::string name;
     u16 vigor,end,att,vit,str,dex,intll,fth,adp;
     float weight{0.f},max_weight{0.f};
-    ClassGear gear;
+    ClassGear gear{ };
 };
 struct GameItems{
     std::vector<Item> keys;
@@ -1134,7 +1134,7 @@ void read_config_file(ItemRandoConfig& config){
         if(tokens.size()<2)continue;
         auto& command = tokens[0];
         uint64_t value1=0;
-        uint64_t version=0;
+        [[maybe_unused]] uint64_t version=0;
         if(!cboyo::parse::read_var(tokens[1],value1)){
             std::cerr<<"Error reading item config file line: "<<line<<'\n';
             continue;
@@ -1240,7 +1240,7 @@ bool remove_lot(std::vector<s32>& lots,s32 lot_to_remove){
     return false;
 }
 //Where the magic happens
-void remove_key_items(ItemRandoData& data,ItemRandoConfig& config){
+void remove_key_items(ItemRandoData& data, [[maybe_unused]] ItemRandoConfig& config){
     auto& keys = data.items.keys;
     //Remove items from the item pool so they dont get placed again later
     s32 last_key_removed = 0;
@@ -2379,7 +2379,7 @@ bool unmissable_location_test(){
     std::vector<Lot> safe;
     safe.reserve(2000);
     std::string line;
-    bool missable = false,unmissable =false;
+    [[maybe_unused]] bool missable = false, unmissable = false;
     while(cboyo::parse::getline(file_unmissable,line)){
         if(line.front()=='#'){
             missable=unmissable=false;
