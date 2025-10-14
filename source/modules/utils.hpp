@@ -78,6 +78,13 @@ inline auto time_string_now() -> std::string {
 }
 
 namespace cboyo::parse {
+
+    inline bool getline( std::istream &is, std::string &line ) {
+        if ( !std::getline( is, line ) ) return false;
+        if ( !line.empty( ) && line.back( ) == '\r' ) line.pop_back( );
+        return true;
+    }
+
     inline auto split(std::string_view view, char delimiter) -> std::vector<std::string_view> {
         std::vector<std::string_view> tokens;
 
@@ -95,9 +102,18 @@ namespace cboyo::parse {
 
     inline bool read_var(std::string_view view, auto &out) {
         std::istringstream iss{std::string(view)};
-        iss >> out;
 
-        return !iss.fail() && iss.eof();
+        iss >> out;
+        if (iss.fail()) {
+            std::cerr << "read_var istringstream fail for: " << view << std::endl;
+            return false;
+        }
+        iss >> std::ws;
+        if (!iss.eof()) {
+            std::cerr << "read_var istringstream not EOF for: " << view << std::endl;
+            return false;
+        }
+        return true;
     }
 }
 

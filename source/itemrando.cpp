@@ -263,7 +263,7 @@ namespace solver{
         std::string line;
         bool keys=false,rooms=false,doors=false;
         graph.keys.push_back({"NULL",1});
-        while(std::getline(file,line)){
+        while(cboyo::parse::getline(file,line)){
             if (line.empty()) continue;
             std::string_view sview = line;
             if(sview.front()=='#'){
@@ -585,7 +585,7 @@ bool load_equivalents(ItemRandoData& data){
     }
     data.equivalents.reserve(100);
     std::string line;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         auto tokens = cboyo::parse::split(line,',');
         if(tokens.size()!=2){
@@ -614,7 +614,7 @@ bool load_location_lots(ItemRandoData& data){
     std::string line;
     std::string last_location = "";
 
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
@@ -634,7 +634,7 @@ bool load_location_lots(ItemRandoData& data){
         }
     }
     if(!open_file(file,event_path)) return false;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
@@ -673,7 +673,7 @@ bool load_lots(ItemRandoData& data){
     std::string line;
     if(!open_file(file,other_lots_path))return false;
     bool missable=false,unmissable=false,nochange=false;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty()||line.substr(0,2)=="//")continue;
         if(line.front()=='#'){
             missable=unmissable=nochange=false;
@@ -702,7 +702,7 @@ bool load_lots(ItemRandoData& data){
     }
     if(!open_file(file,chr_lots_path))return false;
     bool chr=false,enemy=false,remove=false;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty()||line.substr(0,2)=="//")continue;
         if(line.front()=='#'){
             chr=enemy=remove=false;
@@ -750,7 +750,7 @@ bool load_key_lots(ItemRandoData& data){
     data.key_lots.reserve(128);
     std::string line;
     s32 key_id = 0;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         auto tokens = cboyo::parse::split(line,',');
         if(tokens[0].front()=='#'){
@@ -807,7 +807,7 @@ bool load_items(GameItems& items){
     std::vector<Item>* item_ptr=nullptr;
     if(!open_file(file,path))return false;
     items.names.reserve(2048);
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty() || line.substr(0,2)=="//")continue;//Comment
         if(line.front()=='#'){
             if(line=="#KEYS") item_ptr=&items.keys;
@@ -863,7 +863,7 @@ bool load_weapon_data(GameItems& items){
     std::string line;
     // items.weapon_specs.reserve(512);
     items.gear_specs.reserve(2048);
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;//Comment
         auto tokens = cboyo::parse::split(line,',');
@@ -923,7 +923,7 @@ bool load_armor_data(GameItems& items){
     if(!open_file(file,path))return false;
     std::string line;
     // items.armor_specs.reserve(512);
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;//Comment
         auto tokens = cboyo::parse::split(line,',');
@@ -963,7 +963,7 @@ bool load_spell_data(GameItems& items){
     if(!open_file(file,path))return false;
     std::string line;
     // items.spell_specs.reserve(512);
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;//Comment
         auto tokens = cboyo::parse::split(line,',');
@@ -990,7 +990,7 @@ bool load_ring_data(GameItems& items){
     if(!open_file(file,path))return false;
     std::string line;
     // items.spell_specs.reserve(512);
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;//Comment
         auto tokens = cboyo::parse::split(line,',');
@@ -1048,7 +1048,7 @@ bool load_shop_items(Shops& shop){
     std::string line;
     bool straid=false,ornifex=false,common=false,remove=false;
     if(!open_file(file,path))return false;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty() || line.substr(0,2)=="//")continue;//Comment
         if(line.front()=='#'){
             straid=ornifex=common=remove=false;
@@ -1146,7 +1146,7 @@ void read_config_file(ItemRandoConfig& config){
         return;
     }
     std::string line;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty())continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//")continue;
@@ -2319,7 +2319,7 @@ void lots_test(){
     safe.reserve(2000);
     std::string line;
     bool missable = false,unmissable =false;
-    while(std::getline(file_unmissable,line)){
+    while(cboyo::parse::getline(file_unmissable,line)){
         if(line.empty()||line.substr(0,2)=="//")continue;
         if(line.front()=='#'){
             missable=unmissable=false;
@@ -2346,7 +2346,7 @@ void lots_test(){
     }
     std::vector<std::vector<uint32_t>> equivalent;
     std::ifstream file("./build/EquivalentLots.txt");
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         std::string_view view = line;
         auto tokens = cboyo::parse::split(view,',');
@@ -2403,7 +2403,7 @@ bool unmissable_location_test(){
     safe.reserve(2000);
     std::string line;
     bool missable = false,unmissable =false;
-    while(std::getline(file_unmissable,line)){
+    while(cboyo::parse::getline(file_unmissable,line)){
         if(line.empty()||line.substr(0,2)=="//")continue;
         if(line.front()=='#'){
             missable=unmissable=false;
@@ -2425,7 +2425,7 @@ bool unmissable_location_test(){
         return false;
     }
     std::string current_location;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
@@ -2448,7 +2448,7 @@ bool unmissable_location_test(){
         std::cout<<"Error opening file\n";
         return false;
     }
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//") continue;
@@ -2557,7 +2557,7 @@ void find_item_lots_enemies(){
         }
         names.push_back({});
         std::string line;
-        while(std::getline(file,line)){
+        while(cboyo::parse::getline(file,line)){
             if(line.empty()) continue;
             std::string_view view=line;
             u64 id =0;
@@ -2605,7 +2605,7 @@ void get_weapon_data(){
     open_file(file,name_path);
     std::string line;
     std::unordered_map<s32,std::string> weapon_infusions;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         auto tokens = cboyo::parse::split(line,',');
         auto id = 0;
@@ -2687,7 +2687,7 @@ void get_itemlots_description(){
     if(!open_file(file,path))return;
     std::string line;
     std::unordered_map<s32,std::string> lots_descriptions;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if (line.empty()) continue;
         auto tokens = cboyo::parse::split(line,';');
         if(tokens.size()!=2){
@@ -2729,7 +2729,7 @@ void get_itemlots_description(){
     std::stringstream out;
     std::filesystem::path other_lots_path = "build/OtherLots.txt";
     if(!open_file(file,other_lots_path))return;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty()||line.substr(0,2)=="//")continue;
         if(line.front()=='#'){
             out<<line<<'\n';

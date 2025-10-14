@@ -205,7 +205,7 @@ bool load_entity_types(const std::filesystem::path& folder_path,GameData& map_da
         auto& entity_type = map_data[map_index].entity_info;
         entity_type.resize(10000,{EntityType::UNKNOWN,0u});
         std::string line;
-        while(std::getline(file,line)){
+        while(cboyo::parse::getline(file,line)){
             if(line.empty())continue;
             if(line.substr(0,2)=="//")continue;
             auto id = std::stoi(line.substr(0,line.find(' ')));
@@ -494,7 +494,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
     }
     std::string line;
     std::vector<size_t> enemy_id_to_index(10000,SIZE_MAX);
-    while(std::getline(enemy_prop_file,line)){
+    while(cboyo::parse::getline(enemy_prop_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
         auto columns = cboyo::parse::split(line,',');
@@ -513,7 +513,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         std::cout<<"Failed to load enemy table , can't open file:"<<enemies_filepath<<"\n";
         return false;
     }
-    while(std::getline(enemy_file,line)){
+    while(cboyo::parse::getline(enemy_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
         EnemyVariation variation;
@@ -553,7 +553,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         return false;
     }
     std::fill(enemy_id_to_index.begin(),enemy_id_to_index.end(),SIZE_MAX);
-    while(std::getline(boss_prop_file,line)){
+    while(cboyo::parse::getline(boss_prop_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
         auto columns = cboyo::parse::split(line,',');
@@ -573,7 +573,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         std::cout<<"Failed to load enemy table , can't open file:"<<bosses_filepath<<"\n";
         return false;
     }
-    while(std::getline(bosses_file,line)){
+    while(cboyo::parse::getline(bosses_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
         EnemyVariation variation;
@@ -647,7 +647,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         std::cout<<"Failed to load enemy table , can't open file:"<<boss_arena_path<<"\n";
         return false;
     }
-    while(std::getline(arena_file,line)){
+    while(cboyo::parse::getline(arena_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
         auto columns = cboyo::parse::split(line,',');
@@ -678,7 +678,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         std::cout<<"Failed to load enemy table , can't open file:"<<reposition_path<<"\n";
         return false;
     }
-    while(std::getline(reposition_file,line)){
+    while(cboyo::parse::getline(reposition_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
         auto tokens = cboyo::parse::split(line,',');
@@ -1784,7 +1784,7 @@ bool read_configfile(Config& config){
     restore_zone_limit_defaults(config);
     std::ifstream file(paths::configfile);
     std::string line;
-    while(std::getline(file,line)){
+    while(cboyo::parse::getline(file,line)){
         if(line.empty())continue;
         std::string_view view = line;
         if(view.substr(0,2)=="//")continue;
