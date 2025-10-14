@@ -750,7 +750,7 @@ void delete_unused_registers(GameData& map_data){
     for(auto& map:map_data){
         auto& generator = map.generator;
         auto& regist = map.regist;
-        size_t deleted_count=0;
+        [[maybe_unused]] size_t deleted_count=0;
         for(size_t j = 0;j<regist.data.size();j++){
             auto row = regist.row_info[j].row;
             bool in_use = false;
@@ -1150,7 +1150,7 @@ void remove_invaders_summons_invis(GameData& map_data,const Config& config){
         MapSetting settings = get_settings(map.id,config);
         if(!settings.randomize) continue;
         auto& generator = map.generator;
-        size_t deleted_count=0;
+        [[maybe_unused]] size_t deleted_count=0;
         for(size_t j = 0;j<generator.data.size();j++){
             auto entity_type = map.entity_info[generator.row_info[j].row].type;
             bool need_to_delete = false;
@@ -1237,7 +1237,7 @@ struct BossHolder{
 
 BossHolder calculate_boss_holder(EnemyTable& enemy_table,const Config& config){
     BossHolder holder;
-    size_t bosses_to_randomize = 0;
+    [[maybe_unused]] size_t bosses_to_randomize = 0;
     for(const auto& arena:enemy_table.boss_arenas){
         if(!get_settings(arena.map_id,config).randomize)continue;
         size_t boss_count = 1;
@@ -1534,7 +1534,7 @@ void easy_congregation(GameData& map_data,const Config& config){
         MapSetting settings = get_settings(map.id,config);
         if(!settings.randomize) continue;
         auto& generator = map.generator;
-        size_t deleted_count=0;
+        [[maybe_unused]] size_t deleted_count=0;
         for(size_t j = 0;j<generator.data.size();j++){
             auto row = generator.row_info[j].row;
             if(vector_contains(congregation_ids,row)){

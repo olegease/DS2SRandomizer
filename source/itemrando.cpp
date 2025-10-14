@@ -817,7 +817,7 @@ bool load_items(GameItems& items){
                 continue;
             }
             auto tokens = cboyo::parse::split(line,',');
-            int expected = 3;
+            auto expected = 3u;
             if(item_ptr==&items.consumables){
                 expected=4;
             }
@@ -2048,7 +2048,8 @@ void write_item_params(ItemRandoData& rando_data,ItemRandoConfig& config,bool de
             auto row   = classes.row_info[i].row;
             auto& data = classes.data[i];
             for(const auto& mclass:rando_data.classes){
-                if(mclass.id==row){
+                assert( mclass.id >= 0 );
+                if(static_cast< unsigned >(mclass.id)==row){
                     data.soul_level  = mclass.vigor+mclass.end+mclass.vit+mclass.att+mclass.str+mclass.dex+mclass.adp+mclass.intll+mclass.fth-53;
                     data.vigor       = mclass.vigor;
                     data.endurance   = mclass.end;
