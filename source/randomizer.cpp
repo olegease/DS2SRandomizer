@@ -770,6 +770,15 @@ void delete_unused_registers(GameData& map_data){
     }
 }
 
+EnemyType not_found_enemy(){
+    EnemyType et;
+    et.id=-1;
+    et.diff=0;
+    et.size=0;
+    et.souls_held=0;
+    return et;
+}
+
 EnemyType find_enemy_by_id(EnemyTable& enemy_table,s32 character_id){
     for(const auto& e:enemy_table.enemies){
         if(e.id==character_id) return e;
@@ -777,9 +786,7 @@ EnemyType find_enemy_by_id(EnemyTable& enemy_table,s32 character_id){
     for(const auto& e:enemy_table.bosses){
         if(e.id==character_id) return e;
     }
-    EnemyType et;
-    et.id=-1;
-    return et;
+    return not_found_enemy();
 }
 EnemyType* find_enemy_ptr_by_id(EnemyTable& enemy_table,s32 character_id){
     for(auto& e:enemy_table.enemies){
