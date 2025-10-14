@@ -77,7 +77,7 @@ inline auto time_string_now() -> std::string {
     return std::to_string(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count());
 }
 
-namespace parse {
+namespace cboyo::parse {
     inline auto split(std::string_view view, char delimiter) -> std::vector<std::string_view> {
         std::vector<std::string_view> tokens;
 
@@ -101,7 +101,7 @@ namespace parse {
     }
 }
 
-namespace random {
+namespace cboyo::random {
     inline auto m_gen = std::mt19937_64(std::random_device{}());
 
     auto element(auto &&container, auto &&generator) -> decltype(auto) {

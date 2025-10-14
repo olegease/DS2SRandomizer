@@ -497,12 +497,12 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
     while(std::getline(enemy_prop_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
-        auto columns = parse::split(line,',');
+        auto columns = cboyo::parse::split(line,',');
         EnemyType enemy_type;
-        parse::read_var(columns[0],enemy_type.id);
+        cboyo::parse::read_var(columns[0],enemy_type.id);
         enemy_type.name=columns[1];
-        parse::read_var(columns[2],enemy_type.diff);
-        parse::read_var(columns[3],enemy_type.size);
+        cboyo::parse::read_var(columns[2],enemy_type.diff);
+        cboyo::parse::read_var(columns[3],enemy_type.size);
         enemy_id_to_index[enemy_type.id]=enemy_table.enemies.size();
         enemy_table.enemies.push_back(std::move(enemy_type));
     }
@@ -556,13 +556,13 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
     while(std::getline(boss_prop_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
-        auto columns = parse::split(line,',');
+        auto columns = cboyo::parse::split(line,',');
         EnemyType enemy_type;
-        parse::read_var(columns[0],enemy_type.id);
+        cboyo::parse::read_var(columns[0],enemy_type.id);
         enemy_type.name=columns[1];
-        parse::read_var(columns[2],enemy_type.diff);
-        parse::read_var(columns[3],enemy_type.size);
-        parse::read_var(columns[4],enemy_type.souls_held);
+        cboyo::parse::read_var(columns[2],enemy_type.diff);
+        cboyo::parse::read_var(columns[3],enemy_type.size);
+        cboyo::parse::read_var(columns[4],enemy_type.souls_held);
         enemy_id_to_index[enemy_type.id]=enemy_table.bosses.size();
         enemy_table.bosses.push_back(std::move(enemy_type));
     }
@@ -650,25 +650,25 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
     while(std::getline(arena_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
-        auto columns = parse::split(line,',');
+        auto columns = cboyo::parse::split(line,',');
         if(columns.size()!=7){
             std::cout<<"Failed to parse line:"<<line<<" from:"<<boss_arena_path<<"\n";
             return false;
         }
         BossArena arena;
-        parse::read_var(columns[0],arena.map_id);
+        cboyo::parse::read_var(columns[0],arena.map_id);
         columns[1].remove_prefix(1);//Remove the brackets
         columns[1].remove_suffix(1);
-        auto ids = parse::split(columns[1],';');
+        auto ids = cboyo::parse::split(columns[1],';');
         for(size_t i = 0;i<ids.size();i++){
             arena.ids.push_back((u64)-1);
-            parse::read_var(ids[i],arena.ids.back());
+            cboyo::parse::read_var(ids[i],arena.ids.back());
         }
         arena.name=columns[2];
-        parse::read_var(columns[3],arena.size);
-        parse::read_var(columns[4],arena.hp_target);
-        parse::read_var(columns[5],arena.dmg_target);
-        parse::read_var(columns[6],arena.def_target);
+        cboyo::parse::read_var(columns[3],arena.size);
+        cboyo::parse::read_var(columns[4],arena.hp_target);
+        cboyo::parse::read_var(columns[5],arena.dmg_target);
+        cboyo::parse::read_var(columns[6],arena.def_target);
         enemy_table.boss_arenas.push_back(std::move(arena));
     }
     arena_file.close();
@@ -681,7 +681,7 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
     while(std::getline(reposition_file,line)){
         if(line.empty())continue;
         if(line.substr(0,2)=="//")continue;
-        auto tokens = parse::split(line,',');
+        auto tokens = cboyo::parse::split(line,',');
         if(tokens.size()!=3){
             std::cout<<"Bad row in reposition file: Wrong number of tokens. "<<line<<'\n';
             continue;
@@ -692,18 +692,18 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         }
         tokens[2].remove_prefix(1);
         tokens[2].remove_suffix(1);
-        auto p = parse::split(tokens[2],';');
+        auto p = cboyo::parse::split(tokens[2],';');
         if(p.size()!=3){
             std::cout<<"Bad row in reposition file: Wrong number of positions"<<line<<'\n';
             continue;
         }
         EnemyRepositioning repo;
         u64 map_id=0;
-        parse::read_var(tokens[0],map_id);
-        parse::read_var(tokens[1],repo.enemy_row);
-        parse::read_var(p[0],repo.position[0]);
-        parse::read_var(p[1],repo.position[1]);
-        parse::read_var(p[2],repo.position[2]);
+        cboyo::parse::read_var(tokens[0],map_id);
+        cboyo::parse::read_var(tokens[1],repo.enemy_row);
+        cboyo::parse::read_var(p[0],repo.position[0]);
+        cboyo::parse::read_var(p[1],repo.position[1]);
+        cboyo::parse::read_var(p[2],repo.position[2]);
         enemy_table.reposition.insert(std::make_pair(map_id,repo));
     }
     reposition_file.close();
@@ -986,10 +986,10 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
         size_t different_enemies = 0;
         std::vector<s32> new_bosses_ids(settings.enemy_limit,0);
         if(boss_only){
-            boss_index = random::choose_n_elements(allowed_bosses_index,settings.enemy_limit,false,boss_chance_generator);
+            boss_index = cboyo::random::choose_n_elements(allowed_bosses_index,settings.enemy_limit,false,boss_chance_generator);
             for(auto& entry:enemy_slots){
                 if(!entry.replace)continue;
-                size_t random_index = random::vindex(boss_index,boss_chance_generator);
+                size_t random_index = cboyo::random::vindex(boss_index,boss_chance_generator);
                 if(new_bosses_ids[random_index]==0){
                     s32 new_boss_id = create_new_boss(enemy_table,boss_index[random_index],1.f,1.f,1.f,1.f);
                     if(new_boss_id==0) return false;
@@ -1001,13 +1001,13 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
             }
         }else if (can_bosses_spawn_zone){
             size_t different_bosses = (size_t)std::ceilf((float)settings.enemy_limit*((float)config.roaming_boss_chance/100.f));
-            boss_index = random::choose_n_elements(allowed_bosses_index,different_bosses,false,boss_chance_generator);
+            boss_index = cboyo::random::choose_n_elements(allowed_bosses_index,different_bosses,false,boss_chance_generator);
             //Theres a chance that even if n bosses are used the rolls can spawn less
             size_t different_used_bosses = 0;
             for(auto& entry:enemy_slots){
-                bool good_luck = random::roll(config.roaming_boss_chance,boss_chance_generator);
+                bool good_luck = cboyo::random::roll(config.roaming_boss_chance,boss_chance_generator);
                 if(!entry.replace||!good_luck)continue;
-                size_t random_index = random::vindex(boss_index,boss_chance_generator);
+                size_t random_index = cboyo::random::vindex(boss_index,boss_chance_generator);
                 if(new_bosses_ids[random_index]==0){
                     s32 new_boss_id = create_new_boss(enemy_table,boss_index[random_index],1.f,1.f,1.f,1.f);
                     if(new_boss_id==0) return false;
@@ -1031,7 +1031,7 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
         //Dont know if this is an ok way to it
         //random_generator.seed(config.seed+hash_str_uint32(map.name));
         random_generator.seed(combine_seed_with_zone(config.seed, map.name));
-        std::vector<size_t> enemies_id = random::choose_n_elements(allowed_enemies_index,different_enemies,false,random_generator);
+        std::vector<size_t> enemies_id = cboyo::random::choose_n_elements(allowed_enemies_index,different_enemies,false,random_generator);
         if(!enemies_id.empty()){
             bool single_deck = config.enemy_shuffling==0;
             bool fit_deck    = config.enemy_shuffling==1;
@@ -1055,7 +1055,7 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
                 }
                 enemy_deck.resize(replace_count);
                 for(auto& card:enemy_deck){
-                    card = random::element(enemies_id,deck_shuffler);
+                    card = cboyo::random::element(enemies_id,deck_shuffler);
                 }
             }
             //Use the deck to select enemies
@@ -1082,12 +1082,12 @@ bool randomize_enemies(GameData& map_data,EnemyTable& enemy_table,const Config& 
             if(slot.boss){
                 const auto& boss_variation = enemy_table.bosses[slot.index].variations.front();
                 random_generator.discard(1);//Make it so replacing the enemy for a boss doesn't change the generator state
-                slot.enemy = random::element(boss_variation.instances,random_generator);
+                slot.enemy = cboyo::random::element(boss_variation.instances,random_generator);
                 slot.enemy.regist.enemy_id=slot.boss_id;//Replace by the created boss
             }else{
                 const auto& variations = enemy_table.enemies[slot.index].variations;
-                const auto& instances  = random::element(variations,random_generator).instances;
-                slot.enemy = random::element(instances,random_generator);
+                const auto& instances  = cboyo::random::element(variations,random_generator).instances;
+                slot.enemy = cboyo::random::element(instances,random_generator);
             }
         }
         //Scaling
@@ -1183,7 +1183,7 @@ void npc_cloning(GameData& map_data,EnemyTable& enemy_table,const Config& config
     u64 regist_start_row = 1100000000u;
     std::mt19937_64 random_generator;
     random_generator.seed(config.seed);
-    auto npc_index = random::vindex(enemy_table.npcs,random_generator);
+    auto npc_index = cboyo::random::vindex(enemy_table.npcs,random_generator);
     for(auto& map:map_data){
         auto& generator = map.generator;
         //Change all NCPS to use the same model
@@ -1313,12 +1313,12 @@ BossHolder generate_boss_deck(EnemyTable& enemy_table,const Config& config,std::
         }else{
             bool multiboss = enable_multiboss(arena,config);
             replacement.skip=false;
-            replacement.boss_table_index = random::element(*deck,random_generator);
+            replacement.boss_table_index = cboyo::random::element(*deck,random_generator);
             for(size_t i = 0;i<arena.ids.size();i++){
                 replacement.arena_boss_index = i;
                 holder.rando_data.push_back(replacement);
                 if(multiboss&&((i+1)<arena.ids.size())){
-                    replacement.boss_table_index = random::element(*deck,random_generator);
+                    replacement.boss_table_index = cboyo::random::element(*deck,random_generator);
                 }else{
                     random_generator.discard(1);
                 }
@@ -1333,10 +1333,10 @@ std::vector<u64> get_random_boss_ids(const BossArena& arena,EnemyTable& enemy_ta
     size_t boss_count=arena.ids.size();
     std::vector<EnemyType>& bosses=enemy_table.bosses;
     while(replacement_ids.size()<boss_count){
-        size_t boss_index = random::vindex(bosses,random_generator);
+        size_t boss_index = cboyo::random::vindex(bosses,random_generator);
         size_t tries = 0;
         while(bosses[boss_index].size>arena.size){//Put bosses where they fit
-            boss_index = random::vindex(bosses,random_generator);
+            boss_index = cboyo::random::vindex(bosses,random_generator);
             if((tries++)>10000)break;//Give up
         }
         if(multiboss){
@@ -1390,7 +1390,7 @@ void randomize_bosses(GameData& map_data,EnemyTable& enemy_table,const Config& c
 
         log<<row<<" REPLACEMENT:"<<boss.id<<" "<<boss.name<<'\n';
         const auto& variation = boss.variations.front();
-        auto random_enemy = random::element(variation.instances,random_generator);
+        auto random_enemy = cboyo::random::element(variation.instances,random_generator);
         if(arena.name=="Twin Dragonrider"&&twins&&row==864){ //864 is the bow guy
             auto ep = find_enemy_param(enemy_table.enemy_params,random_enemy.regist.enemy_id);
             // std::cout<<ep.ng_hp<<" "<<ep.behavior_id<<" "<<ep.id<<" "<<ep.dmg_mult<<"\n";
@@ -1771,7 +1771,7 @@ bool read_configfile(Config& config){
     config.remove_summons=true;
     config.replace_npcs=true;
     config.write_cheatsheet=true;
-    config.seed=random::integer<u64>(0u,999999999999999u,random::m_gen);
+    config.seed=cboyo::random::integer<u64>(0u,999999999999999u,cboyo::random::m_gen);
     config.banned_enemies = {2130,2131,2261,6000};
     for(const auto& entry:common::map_names){
         MapSetting s;
@@ -1789,7 +1789,7 @@ bool read_configfile(Config& config){
         std::string_view view = line;
         if(view.substr(0,2)=="//")continue;
         if(view.front()!='#')continue;
-        auto tokens = parse::split(line,' ');
+        auto tokens = cboyo::parse::split(line,' ');
         if(tokens.size()<2)continue;
         auto& command = tokens[0];
         if(command=="#BANNED"){
@@ -1799,12 +1799,12 @@ bool read_configfile(Config& config){
             }
             tokens[1].remove_prefix(1);
             tokens[1].remove_suffix(1);
-            auto banned_entries = parse::split(tokens[1],',');
+            auto banned_entries = cboyo::parse::split(tokens[1],',');
             config.banned_enemies.clear();
             config.banned_enemies.reserve(150);
             for(const auto& entry:banned_entries){
                 size_t entry_value = 0;
-                if(parse::read_var(entry,entry_value)){
+                if(cboyo::parse::read_var(entry,entry_value)){
                     config.banned_enemies.push_back(entry_value);
                 }
 
@@ -1812,7 +1812,7 @@ bool read_configfile(Config& config){
             continue;
         }
         uint64_t value1=0;
-        if(!parse::read_var(tokens[1],value1)){
+        if(!cboyo::parse::read_var(tokens[1],value1)){
             std::cerr<<"Error reading config file line: "<<line<<'\n';
             continue;
         }

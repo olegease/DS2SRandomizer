@@ -1,6 +1,8 @@
 #ifndef MY_PARAMEDITOR
 #define MY_PARAMEDITOR
 
+#include <cstdlib>
+#include <cstring>
 #include <string>
 #include <vector>
 #include <iostream>
