@@ -10,8 +10,12 @@ target_sources( ${PROJECT_NAME} PRIVATE
     randomizer.cpp
 )
 
-if( ${PROJECT}_ENABLE_WARNINGS AND MSVC )
-    target_compile_options( ${PROJECT_NAME} PRIVATE /W4 )
+if( ${PROJECT_NAME}_ENABLE_WARNINGS )
+    if ( MSVC )
+        target_compile_options( ${PROJECT_NAME} PRIVATE /W4 )
+    else( )
+        target_compile_options( ${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic )
+    endif( )
 endif( )
 
 add_executable( ds2srand )

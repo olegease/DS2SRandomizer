@@ -1,6 +1,8 @@
 #ifndef MY_PARAMEDITOR
 #define MY_PARAMEDITOR
 
+#include <cstdlib>
+#include <cstring>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -292,8 +294,8 @@ struct ParamHeader{
 };
 struct ParamRowInfo{
     u64 row;
-    u64 initial_byte;
-    u64 end_of_file;
+    u64 initial_byte{ };
+    u64 end_of_file{ };
 };
 
 template<typename T>

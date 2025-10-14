@@ -2,6 +2,7 @@
 #define DS2SRANDOMIZER_CLASSES_MENUTEXT_HPP
 
 #include <array>
+#include <cinttypes>
 #include <fstream>
 
 namespace ds2srand::classes {
@@ -17,14 +18,14 @@ namespace ds2srand::classes {
             unsigned offset;
             std::string_view name;
         };
-        inline static OverrideBytes const warrior  { 0x11CE, "Warrior" };
-        inline static OverrideBytes const knight   { 0x11DE, "Knight" };
-        inline static OverrideBytes const bandit   { 0x11EC, "Bandit" };
-        inline static OverrideBytes const cleric   { 0x11FA, "Cleric" };
-        inline static OverrideBytes const sorcerer { 0x1208, "Sorcerer" };
-        inline static OverrideBytes const explorer { 0x121A, "Explorer" };
-        inline static OverrideBytes const swordsman{ 0x122C, "Swordsman" };
-        inline static OverrideBytes const deprived { 0x1240, "Deprived" };
+        inline static OverrideBytes const warrior  { 0x11CC, "Warrior" };
+        inline static OverrideBytes const knight   { 0x11DC, "Knight" };
+        inline static OverrideBytes const bandit   { 0x11EA, "Bandit" };
+        inline static OverrideBytes const cleric   { 0x11F8, "Cleric" };
+        inline static OverrideBytes const sorcerer { 0x1206, "Sorcerer" };
+        inline static OverrideBytes const explorer { 0x1218, "Explorer" };
+        inline static OverrideBytes const swordsman{ 0x122A, "Swordsman" };
+        inline static OverrideBytes const deprived { 0x123E, "Deprived" };
 
         inline static std::array< OverrideBytes, 8 > const array {
             warrior, knight, swordsman, bandit,

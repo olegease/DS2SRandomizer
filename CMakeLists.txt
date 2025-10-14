@@ -4,9 +4,10 @@ project( DS2SRandomizer VERSION 0.0.0 LANGUAGES CXX )
 set( CMAKE_CXX_STANDARD 20 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
 set( CMAKE_CXX_EXTENSIONS OFF )
-
+# TODO move to presets
 set( ${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY
-    "C:/Program Files (x86)/Steam/steamapps/common/Dark Souls II Scholar of the First Sin/Game/randomizer"
+    # "C:/Program Files (x86)/Steam/steamapps/common/Dark Souls II Scholar of the First Sin/Game/randomizer"
+    "/home/oleg/snap/steam/common/.steam/steam/steamapps/common/Dark Souls II Scholar of the First Sin/Game/randomizer"
     CACHE PATH
     "Runtime output directory"
 )

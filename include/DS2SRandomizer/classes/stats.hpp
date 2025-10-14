@@ -117,7 +117,7 @@ namespace ds2srand::classes {
                 return static_cast< uint8_t >( dist_diff( generator ) );
             };
             int curr = 0;
-            int sum = 0;
+            unsigned sum = 0u;
             int8_t sign = gen_sign( );
             for ( auto &stat : stats ) {
                 int8_t gend = gen_diff( ) * sign;
