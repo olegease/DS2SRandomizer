@@ -80,9 +80,12 @@ inline auto time_string_now() -> std::string {
 namespace cboyo::parse {
 
     inline bool getline( std::istream &is, std::string &line ) {
-        if ( !std::getline( is, line ) ) return false;
-        if ( !line.empty( ) && line.back( ) == '\r' ) line.pop_back( );
-        return true;
+        for ( ; ; ) {
+            if ( !std::getline( is, line ) ) return false;
+            if ( !line.empty( ) && line.back( ) == '\r' ) line.pop_back( );
+            if ( line.empty( ) || line.starts_with( "//" ) ) continue;
+            return true;
+        }
     }
 
     inline auto split(std::string_view view, char delimiter) -> std::vector<std::string_view> {

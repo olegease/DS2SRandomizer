@@ -206,8 +206,6 @@ bool load_entity_types(const std::filesystem::path& folder_path,GameData& map_da
         entity_type.resize(10000,{EntityType::UNKNOWN,0u});
         std::string line;
         while(cboyo::parse::getline(file,line)){
-            if(line.empty())continue;
-            if(line.substr(0,2)=="//")continue;
             auto id = std::stoi(line.substr(0,line.find(' ')));
             auto type = line.substr(line.find('[')+1,line.find(']')-line.find('[')-1);
             if(type=="NPC"){
@@ -495,8 +493,6 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
     std::string line;
     std::vector<size_t> enemy_id_to_index(10000,SIZE_MAX);
     while(cboyo::parse::getline(enemy_prop_file,line)){
-        if(line.empty())continue;
-        if(line.substr(0,2)=="//")continue;
         auto columns = cboyo::parse::split(line,',');
         EnemyType enemy_type;
         cboyo::parse::read_var(columns[0],enemy_type.id);
@@ -514,8 +510,6 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         return false;
     }
     while(cboyo::parse::getline(enemy_file,line)){
-        if(line.empty())continue;
-        if(line.substr(0,2)=="//")continue;
         EnemyVariation variation;
         variation.id = std::stoi(line.substr(0,line.find(' ')));
         variation.name = line.substr(line.find(' ')+1);
@@ -554,8 +548,6 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
     }
     std::fill(enemy_id_to_index.begin(),enemy_id_to_index.end(),SIZE_MAX);
     while(cboyo::parse::getline(boss_prop_file,line)){
-        if(line.empty())continue;
-        if(line.substr(0,2)=="//")continue;
         auto columns = cboyo::parse::split(line,',');
         EnemyType enemy_type;
         cboyo::parse::read_var(columns[0],enemy_type.id);
@@ -574,8 +566,6 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         return false;
     }
     while(cboyo::parse::getline(bosses_file,line)){
-        if(line.empty())continue;
-        if(line.substr(0,2)=="//")continue;
         EnemyVariation variation;
         variation.id = std::stoi(line.substr(0,line.find(' ')));
         variation.name = line.substr(line.find(' ')+1);
@@ -648,8 +638,6 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         return false;
     }
     while(cboyo::parse::getline(arena_file,line)){
-        if(line.empty())continue;
-        if(line.substr(0,2)=="//")continue;
         auto columns = cboyo::parse::split(line,',');
         if(columns.size()!=7){
             std::cout<<"Failed to parse line:"<<line<<" from:"<<boss_arena_path<<"\n";
@@ -679,8 +667,6 @@ bool load_enemy_table(EnemyTable& enemy_table,GameData& map_data){
         return false;
     }
     while(cboyo::parse::getline(reposition_file,line)){
-        if(line.empty())continue;
-        if(line.substr(0,2)=="//")continue;
         auto tokens = cboyo::parse::split(line,',');
         if(tokens.size()!=3){
             std::cout<<"Bad row in reposition file: Wrong number of tokens. "<<line<<'\n';
@@ -1785,9 +1771,7 @@ bool read_configfile(Config& config){
     std::ifstream file(paths::configfile);
     std::string line;
     while(cboyo::parse::getline(file,line)){
-        if(line.empty())continue;
         std::string_view view = line;
-        if(view.substr(0,2)=="//")continue;
         if(view.front()!='#')continue;
         auto tokens = cboyo::parse::split(line,' ');
         if(tokens.size()<2)continue;
