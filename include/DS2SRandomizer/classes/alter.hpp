@@ -1,6 +1,6 @@
 #ifndef DS2SRANDOMIZER_CLASSES_ALTER_HPP
 #define DS2SRANDOMIZER_CLASSES_ALTER_HPP
-
+#error "DS2SRandomizer/classes/alter.hpp is deprecated and subject to be removed, use ds2srand/start/alter.hxx instead"
 #include <array>
 #include <string>
 

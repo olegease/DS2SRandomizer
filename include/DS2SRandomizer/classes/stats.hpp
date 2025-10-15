@@ -1,6 +1,6 @@
 #ifndef DS2SRANDOMIZER_CLASSES_STATS_HPP
 #define DS2SRANDOMIZER_CLASSES_STATS_HPP
-
+#error "DS2SRandomizer/classes/stats.hpp is deprecated and subject to be removed, use ds2srand/start/stats.hxx instead"
 #include <algorithm>
 #include <array>
 #include <cassert>

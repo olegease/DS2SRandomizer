@@ -1,6 +1,6 @@
 #ifndef DS2SRANDOMIZER_CLASSES_MENUTEXT_HPP
 #define DS2SRANDOMIZER_CLASSES_MENUTEXT_HPP
-
+#error "DS2SRandomizer/classes/menutext.hpp is deprecated and subject to be removed, use ds2srand/start/menutext.hxx instead"
 #include <array>
 #include <cinttypes>
 #include <fstream>
