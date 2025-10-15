@@ -1,8 +1,16 @@
 root = true
-
-[*.{txt,hpp,cpp}]
+# TODO remove on new repo transition, for now preserve old original repository files windows crlf
+[*.{hpp,cpp}]
 charset = utf-8
 end_of_line = crlf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+# normal line endings
+[*.{txt,hxx,cxx}]
+charset = utf-8
+end_of_line = lf
 indent_size = 4
 indent_style = space
 insert_final_newline = true
