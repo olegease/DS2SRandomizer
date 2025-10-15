@@ -197,6 +197,34 @@ namespace ds2srand::classes {
         };
     };
 
+    class Optimal200 {
+        struct ArrayData {
+            Stats const &stats;
+            uint8_t index{ };
+            ArrayData( Stats const &s, uint8_t i ) : stats{ s }, index{ i } { }
+        };
+    public:
+        inline static Stats Warrior  { Stats::Tank{ 8u,64u,50u }, Stats::Dual{50u,12u, 9u }, Stats::Mage{50u, 5u, 5u } };
+        inline static Stats Knight   { Stats::Tank{50u,48u,64u }, Stats::Dual{50u, 8u,20u }, Stats::Mage{ 4u, 3u, 6u } };
+        inline static Stats Swordsman{ Stats::Tank{36u, 4u,16u }, Stats::Dual{40u,40u,64u }, Stats::Mage{40u, 8u, 5u } };
+        inline static Stats Bandit   { Stats::Tank{64u,50u,25u }, Stats::Dual{ 7u,80u,16u }, Stats::Mage{ 2u, 1u, 8u } };
+        inline static Stats Cleric   { Stats::Tank{48u, 8u,50u }, Stats::Dual{64u, 5u, 4u }, Stats::Mage{20u,18u,36u } };
+        inline static Stats Sorcerer { Stats::Tank{20u, 5u, 3u }, Stats::Dual{10u, 7u, 8u }, Stats::Mage{94u,64u,42u } };
+        inline static Stats Explorer { Stats::Tank{20u,15u, 6u }, Stats::Dual{ 8u,64u,80u }, Stats::Mage{50u, 5u, 5u } };
+        inline static Stats Deprived { Stats::Tank{50u, 6u, 8u }, Stats::Dual{30u, 6u,33u }, Stats::Mage{50u, 6u,64u } };
+
+        inline static std::array< ArrayData, 8 > const array {
+            ArrayData{ Warrior,   0 },
+            ArrayData{ Knight,    1 },
+            ArrayData{ Swordsman, 2 },
+            ArrayData{ Bandit,    3 },
+            ArrayData{ Cleric,    4 },
+            ArrayData{ Sorcerer,  5 },
+            ArrayData{ Explorer,  6 },
+            ArrayData{ Deprived,  7 }
+        };
+    };
+
     struct StatsData {
         std::fstream file;
         StatsData( ) : file{ "Param/PlayerStatusParam.param", std::ios::binary | std::ios::in | std::ios::out } {

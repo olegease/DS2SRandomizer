@@ -55,6 +55,7 @@ int main( int argc, char *argv[] ) try {
         std::cout << "Options:\n";
         std::cout << "\t-h, --help       Show this help message\n";
         std::cout << "\t-r, --restore    Restore default " << args.command << " parameters\n";
+        std::cout << "\t--optimal200     [class command only] Set all original classes to optimal 200 soul level\n";
         std::cout << std::endl;
         return EXIT_SUCCESS;
     }
@@ -83,10 +84,16 @@ int main( int argc, char *argv[] ) try {
     }
 
     if ( check_command( "class" ) ) {
-        auto names = app::classes::scatter( );
-        std::cout << "Class names: ";
-        for ( auto const &name : names ) std::cout << name << " ";
-        std::cout << std::endl;
+        if ( args.options.contains( "--optimal200" ) ) {
+            std::cout << "Setting all original classes to optimal 200 soul level" << std::endl;
+            app::classes::optimal200( );
+        } else {
+            std::cout << "Scattering character class names and stats" << std::endl;
+            auto names = app::classes::scatter( );
+            std::cout << "Class names:";
+            for ( auto const &name : names ) std::cout << " " << name;
+            std::cout << std::endl;
+        }
     }
 
     if ( check_command( "enemy" ) ) {

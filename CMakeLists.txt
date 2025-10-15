@@ -13,7 +13,7 @@ set( ${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY
 )
 
 option( ${PROJECT_NAME}_ENABLE_WARNINGS "Enable warnings" OFF )
-option( ${PROJECT_NAME}_BUILD_INTO_RUNTIME "Build into runtime output directory" OFF )
+option( ${PROJECT_NAME}_BUILD_INTO_RUNTIME "Build into runtime output directory" ON )
 
 add_subdirectory( source )
 add_library( cboyo::${PROJECT_NAME} ALIAS ${PROJECT_NAME} )

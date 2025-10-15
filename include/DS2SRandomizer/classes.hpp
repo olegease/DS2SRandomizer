@@ -26,12 +26,21 @@ namespace ds2srand::classes {
         }
         return names;
     }
-
+    // TODO split to private menutext and statsdata restore functions
     inline void restore( ) {
         MenuText menutext{ };
         StatsData statsdata{ };
         menutext.restore( );
         statsdata.restore( );
+    }
+
+    inline auto optimal200( ) -> void {
+        restore( ); // TODO only need to restore menutext
+        StatsData statsdata{ };
+        for ( auto &orig_class : Original::array ) {
+            Stats stats = Optimal200::array[ orig_class.index ].stats;
+            statsdata.write( orig_class.index, stats );
+        }
     }
 } // namespace ds2srand::classes
 
