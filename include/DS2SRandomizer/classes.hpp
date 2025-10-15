@@ -9,7 +9,7 @@
 #include <string>
 
 namespace ds2srand::classes {
-
+    // TODO seperate interface and implementation, e.g move to source/classes.cpp
     inline auto scatter( ) -> Alter::array_view {
         Alter::array_view names{ };
         MenuText menutext{ };
