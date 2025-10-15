@@ -48,7 +48,7 @@ int main( int argc, char *argv[] ) try {
     app::Args args{ argc, argv };
     if ( args.options.contains( "-h" ) || args.options.contains( "--help" ) ) {
         std::cout << "Usage: ds2srand [command] [options]\n";
-        std::cout << "Commands: (enemy and items by default\n";
+        std::cout << "Commands:\n";
         std::cout << "\tstart:           Scatter character starting class names and stats\n";
         std::cout << "\tenemy:           Enemies related options\n";
         std::cout << "\titems:           Items related options\n";
