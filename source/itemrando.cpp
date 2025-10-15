@@ -1,4 +1,4 @@
-#include <DS2SRandomizer/classes.hpp>
+#include <ds2srand/start.hxx>
 #include "modules/item_rando.hpp"
 #include "modules/param_editor.hpp"
 #include "modules/utils.hpp"
@@ -994,13 +994,13 @@ bool load_ring_data(GameItems& items){
 bool load_classes(std::vector<ClassSpecs>& classes){
     classes.reserve(8);
     try {
-        ds2srand::classes::StatsData statsdata{ };
+        ds2srand::start::StatsData statsdata{ };
         std::array< uint8_t, 8 > index_adapter{ 0, 1, 3, 4, 5, 6, 2, 7 };
         std::array< uint8_t, 8 > first{ 20, 30, 100, 50, 70, 80, 90, 110 };
         std::array< char const *, 8 > second{ "Warrior", "Knight", "Swordsman", "Bandit", "Cleric", "Sorcerer", "Explorer", "Deprived" };
 
         for ( auto idx : index_adapter ) {
-            ds2srand::classes::StatsData::StatsAdapter stats_adapter{ statsdata.read( idx ) };
+            ds2srand::start::StatsData::StatsAdapter stats_adapter{ statsdata.read( idx ) };
             classes.push_back({
                 first[idx], second[idx],
                 stats_adapter.array[0], stats_adapter.array[1], stats_adapter.array[2],

@@ -1,14 +1,14 @@
-#ifndef DS2SRANDOMIZER_CLASS_HPP
-#define DS2SRANDOMIZER_CLASS_HPP
-#error "DS2SRandomizer/classes.hpp is deprecated and subject to be removed, use ds2srand/start.hxx instead"
-#include "classes/alter.hpp"
-#include "classes/menutext.hpp"
-#include "classes/stats.hpp"
+#ifndef OLEGEASE_DS2SRAND_START_HXX
+#define OLEGEASE_DS2SRAND_START_HXX
+
+#include <ds2srand/start/alter.hxx>
+#include <ds2srand/start/menutext.hxx>
+#include <ds2srand/start/stats.hxx>
 
 #include <array>
 #include <string>
 
-namespace ds2srand::classes {
+namespace ds2srand::start {
     // TODO seperate interface and implementation, e.g move to source/classes.cpp
     inline auto scatter( ) -> Alter::array_view {
         Alter::array_view names{ };
@@ -42,8 +42,8 @@ namespace ds2srand::classes {
             statsdata.write( orig_class.index, stats );
         }
     }
-} // namespace ds2srand::classes
+} // namespace ds2srand::start
 
-#endif//DS2SRANDOMIZER_CLASS_HPP
+#endif//OLEGEASE_DS2SRAND_START_HXX
 
 // Ⓒ 2025 Oleg'Ease'Kharchuk ᦒ

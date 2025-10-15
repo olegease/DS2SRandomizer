@@ -1,3 +1,4 @@
+#error "source/terminal.cpp is deprecated and subject to be removed, use terminal.cxx instead"
 #include <DS2SRandomizer/classes.hpp>
 #include <modules/item_rando.hpp>
 #include <modules/randomizer.hpp>
