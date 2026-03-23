@@ -7,14 +7,14 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 # TODO move to presets
 set( ${PROJECT_NAME}_RUNTIME_OUTPUT_DIRECTORY
     # "C:/Program Files (x86)/Steam/steamapps/common/Dark Souls II Scholar of the First Sin/Game/randomizer"
-    "/home/oleg/snap/steam/common/.steam/steam/steamapps/common/Dark Souls II Scholar of the First Sin/Game/randomizer"
+    "/home/oleg/data/SteamLibrary/steamapps/common/Dark Souls II Scholar of the First Sin/Game/randomizer"
     CACHE PATH
     "Runtime output directory"
 )
 
-option( ${PROJECT_NAME}_ENABLE_WARNINGS "Enable warnings" )
-option( ${PROJECT_NAME}_BUILD_INTO_RUNTIME "Build into runtime output directory" )
-option( ${PROJECT_NAME}_BUILD_EXECUTABLE "Build the ds2srand executable" )
+option( ${PROJECT_NAME}_ENABLE_WARNINGS "Enable warnings" ON )
+option( ${PROJECT_NAME}_BUILD_INTO_RUNTIME "Build into runtime output directory" ON )
+option( ${PROJECT_NAME}_BUILD_EXECUTABLE "Build the ds2srand executable" ON )
 
 add_subdirectory( source )
 add_library( ${PROJECT_NAME}::lib ALIAS ${PROJECT_NAME}__lib )
