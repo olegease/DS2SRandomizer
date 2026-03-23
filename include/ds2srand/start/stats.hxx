@@ -20,12 +20,12 @@ namespace ds2srand::start {
     class Stats {
         inline static constexpr unsigned Leaqual_Percent_Default = 20u;
         struct Tank_ {
-            uint8_t vig_{ }, vit_{ }, str_{ };
+            uint8_t vig_{ }, str_{ }, vit_{ };
             unsigned sum_{ };
             Tank_( ) = default;
-            Tank_( uint8_t vig, uint8_t vit, uint8_t str ) :
-                vig_{ vig }, vit_{ vit }, str_{ str },
-                sum_{ static_cast< unsigned >( vig + vit + str ) }
+            Tank_( uint8_t vig, uint8_t str, uint8_t vit ) :
+                vig_{ vig }, str_{ str }, vit_{ vit },
+                sum_{ static_cast< unsigned >( vig + str + vit ) }
             { }
         } tank_;
         struct Dual_ {
@@ -179,13 +179,13 @@ namespace ds2srand::start {
             Names( Stats const &s, std::string_view n, uint8_t i ) : stats{ s }, name{ n }, index{ i } { }
         };
     public:
-        inline static Stats Warrior  { Stats::Tank{ 7u, 6u,15u }, Stats::Dual{ 6u,11u, 5u }, Stats::Mage{ 5u, 5u, 5u } };
-        inline static Stats Knight   { Stats::Tank{12u, 7u,11u }, Stats::Dual{ 6u, 8u, 9u }, Stats::Mage{ 4u, 3u, 6u } };
-        inline static Stats Swordsman{ Stats::Tank{ 4u, 4u, 9u }, Stats::Dual{ 8u,16u, 6u }, Stats::Mage{ 6u, 7u, 5u } };
-        inline static Stats Bandit   { Stats::Tank{ 9u,11u, 9u }, Stats::Dual{ 7u,14u, 3u }, Stats::Mage{ 2u, 1u, 8u } };
-        inline static Stats Cleric   { Stats::Tank{10u, 8u,11u }, Stats::Dual{ 3u, 5u, 4u }, Stats::Mage{10u, 4u,12u } };
-        inline static Stats Sorcerer { Stats::Tank{ 5u, 5u, 3u }, Stats::Dual{ 6u, 7u, 8u }, Stats::Mage{12u,14u, 4u } };
-        inline static Stats Explorer { Stats::Tank{ 7u, 9u, 6u }, Stats::Dual{ 6u, 6u,12u }, Stats::Mage{ 7u, 5u, 5u } };
+        inline static Stats Warrior  { Stats::Tank{ 7u,15u, 6u }, Stats::Dual{ 6u,11u, 5u }, Stats::Mage{ 5u, 5u, 5u } };
+        inline static Stats Knight   { Stats::Tank{12u,11u, 7u }, Stats::Dual{ 6u, 8u, 9u }, Stats::Mage{ 4u, 3u, 6u } };
+        inline static Stats Swordsman{ Stats::Tank{ 4u, 9u, 4u }, Stats::Dual{ 8u,16u, 6u }, Stats::Mage{ 6u, 7u, 5u } };
+        inline static Stats Bandit   { Stats::Tank{ 9u, 9u,11u }, Stats::Dual{ 7u,14u, 3u }, Stats::Mage{ 2u, 1u, 8u } };
+        inline static Stats Cleric   { Stats::Tank{10u,11u, 8u }, Stats::Dual{ 3u, 5u, 4u }, Stats::Mage{10u, 4u,12u } };
+        inline static Stats Sorcerer { Stats::Tank{ 5u, 3u, 5u }, Stats::Dual{ 6u, 7u, 8u }, Stats::Mage{12u,14u, 4u } };
+        inline static Stats Explorer { Stats::Tank{ 7u, 6u, 9u }, Stats::Dual{ 6u, 6u,12u }, Stats::Mage{ 7u, 5u, 5u } };
         inline static Stats Deprived { Stats::Tank{ 6u, 6u, 6u }, Stats::Dual{ 6u, 6u, 6u }, Stats::Mage{ 6u, 6u, 6u } };
 
         inline static std::array< Names, 8 > const array {
@@ -207,14 +207,14 @@ namespace ds2srand::start {
             ArrayData( Stats const &s, uint8_t i ) : stats{ s }, index{ i } { }
         };
     public:
-        inline static Stats Warrior  { Stats::Tank{ 8u,64u,50u }, Stats::Dual{50u,12u, 9u }, Stats::Mage{50u, 5u, 5u } };
-        inline static Stats Knight   { Stats::Tank{50u,48u,64u }, Stats::Dual{50u, 8u,20u }, Stats::Mage{ 4u, 3u, 6u } };
-        inline static Stats Swordsman{ Stats::Tank{36u, 4u,16u }, Stats::Dual{40u,40u,64u }, Stats::Mage{40u, 8u, 5u } };
-        inline static Stats Bandit   { Stats::Tank{64u,50u,25u }, Stats::Dual{ 7u,80u,16u }, Stats::Mage{ 2u, 1u, 8u } };
-        inline static Stats Cleric   { Stats::Tank{48u, 8u,50u }, Stats::Dual{64u, 5u, 4u }, Stats::Mage{20u,18u,36u } };
-        inline static Stats Sorcerer { Stats::Tank{20u, 5u, 3u }, Stats::Dual{10u, 7u, 8u }, Stats::Mage{94u,64u,42u } };
-        inline static Stats Explorer { Stats::Tank{20u,15u, 6u }, Stats::Dual{ 8u,64u,80u }, Stats::Mage{50u, 5u, 5u } };
-        inline static Stats Deprived { Stats::Tank{50u, 6u, 8u }, Stats::Dual{30u, 6u,33u }, Stats::Mage{50u, 6u,64u } };
+        inline static Stats Warrior  { Stats::Tank{ 8u,50u,64u }, Stats::Dual{50u,12u, 9u }, Stats::Mage{50u, 5u, 5u } };
+        inline static Stats Knight   { Stats::Tank{50u,64u,48u }, Stats::Dual{50u, 8u,20u }, Stats::Mage{ 4u, 3u, 6u } };
+        inline static Stats Swordsman{ Stats::Tank{24u,27u, 4u }, Stats::Dual{40u,40u,64u }, Stats::Mage{40u, 8u, 6u } };
+        inline static Stats Bandit   { Stats::Tank{64u, 9u,25u }, Stats::Dual{48u,80u,16u }, Stats::Mage{ 2u, 1u, 8u } };
+        inline static Stats Cleric   { Stats::Tank{48u,50u, 8u }, Stats::Dual{64u, 5u, 4u }, Stats::Mage{20u,18u,36u } };
+        inline static Stats Sorcerer { Stats::Tank{20u, 3u, 5u }, Stats::Dual{10u, 7u, 8u }, Stats::Mage{94u,64u,42u } };
+        inline static Stats Explorer { Stats::Tank{20u, 6u,15u }, Stats::Dual{ 8u,64u,80u }, Stats::Mage{50u, 5u, 5u } };
+        inline static Stats Deprived { Stats::Tank{50u, 8u, 6u }, Stats::Dual{30u, 6u,33u }, Stats::Mage{50u, 6u,64u } };
 
         inline static std::array< ArrayData, 8 > const array {
             ArrayData{ Warrior,   0 },
@@ -237,6 +237,7 @@ namespace ds2srand::start {
         // order of stats as they appear in the param file
         struct StatsAdapter
         {
+            static_assert( offsets.size( ) == 9 );
             std::array< uint8_t, offsets.size( ) > array{ };
             StatsAdapter( Stats const &stats) {
                 array[0] = stats.vigor( );
