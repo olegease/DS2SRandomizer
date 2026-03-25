@@ -48,10 +48,13 @@ namespace ds2srand::start {
         } mage_;
         bool specific_{ false };
         enum class Group_ : unsigned{
-            Specific = 0x000u, Balanced,
-            TankDual, TankMage, DualMage,
+            Specific,
             PureTank, PureDual, PureMage,
+            TankDual, DualMage, MageTank,
+            Balanced,
         } group_;
+        static_assert( (unsigned)Group_::Specific == 0 );
+        static_assert( (unsigned)Group_::Balanced == 7 );
         bool lequal_percent( unsigned lhs, unsigned rhs, unsigned percent = Leaqual_Percent_Default ) const {
             if (lhs == rhs) return true;
             unsigned diff = lhs > rhs ? lhs - rhs : rhs - lhs;
@@ -76,8 +79,8 @@ namespace ds2srand::start {
             if ( specific_ ) return Group_::Specific;
             if ( lequal_group_balanced( ) ) return Group_::Balanced;
             if ( lequal_group_tankdual( ) ) return Group_::TankDual;
-            if ( lequal_group_tankmage( ) ) return Group_::TankMage;
             if ( lequal_group_dualmage( ) ) return Group_::DualMage;
+            if ( lequal_group_tankmage( ) ) return Group_::MageTank;
             if ( tank_.sum_ > dual_.sum_ && tank_.sum_ > mage_.sum_ ) return Group_::PureTank;
             if ( dual_.sum_ > tank_.sum_ && dual_.sum_ > mage_.sum_ ) return Group_::PureDual;
             if ( mage_.sum_ > tank_.sum_ && mage_.sum_ > dual_.sum_ ) return Group_::PureMage;
@@ -163,9 +166,10 @@ namespace ds2srand::start {
 
         std::string group_text( ) const {
             static std::array< std::string_view, 8 > texts = {
-                "Specific", "Balanced",
-                "Tank/Dual", "Tank/Mage", "Dual/Mage",
-                "Tank", "Dual", "Mage"
+                "Specific",
+                "Tank", "Dual", "Mage",
+                "Tank/Dual", "Dual/Mage", "Mage/Tank",
+                "Balanced",
             };
             return std::string{ texts[static_cast< unsigned >( group( ) )] };
         }
@@ -308,4 +312,4 @@ namespace ds2srand::start {
 
 #endif//OLEGEASE_DS2SRAND_START_STATS_HXX
 
-// Ⓒ 2025 Oleg'Ease'Kharchuk ᦒ
+// Ⓒ 2025-2026 Oleg'Ease'Kharchuk ᦒ
